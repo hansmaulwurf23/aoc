@@ -25,12 +25,12 @@ def vectorAdd = { Iterable a, Iterable b ->
 }
 
 def directions = [
-    { x, y, z -> [x, y, z] },
-    { x, y, z -> [x, -y, -z] },
-    { x, y, z -> [x, -z, y] },
-    { x, y, z -> [-y, -z, x] },
-    { x, y, z -> [-x, -z, -y] },
-    { x, y, z -> [y, -z, -x] }
+        { x, y, z -> [x, y, z] },
+        { x, y, z -> [x, -y, -z] },
+        { x, y, z -> [x, -z, y] },
+        { x, y, z -> [-y, -z, x] },
+        { x, y, z -> [-x, -z, -y] },
+        { x, y, z -> [y, -z, -x] }
 ]
 
 def flip = { n, coords ->
@@ -38,10 +38,10 @@ def flip = { n, coords ->
 }
 
 def orientations = [
-    { x, y, z -> [x, y, z] },
-    { x, y, z -> [-y, x, z] },
-    { x, y, z -> [-x, -y, z] },
-    { x, y, z -> [y, -x, z] }
+        { x, y, z -> [x, y, z] },
+        { x, y, z -> [-y, x, z] },
+        { x, y, z -> [-x, -y, z] },
+        { x, y, z -> [y, -x, z] }
 ]
 
 def rotate = { n, coords ->
@@ -72,7 +72,7 @@ def matches = { scan0, scan1 ->
 def beaconCoords = [].toSet()
 beaconCoords.addAll(scans[0])
 def finishedScanners = [0]
-def otherScannerPositions = [[0,0,0]] + ([null] * (scans.size() - 2))
+def scannerPositions = [[0,0,0]] + ([null] * (scans.size() - 2))
 def todos = [0]
 while (finishedScanners.size() < scans.size()) {
     println "\nnext round"
@@ -95,8 +95,8 @@ while (finishedScanners.size() < scans.size()) {
                         // flip and rotate in org data
                         scans[scannerIdx] = scan
 
-                        def relToScanner0 = vectorAdd(pos, otherScannerPositions[finishedScannerIdx])
-                        otherScannerPositions[scannerIdx] = relToScanner0
+                        def relToScanner0 = vectorAdd(pos, scannerPositions[finishedScannerIdx])
+                        scannerPositions[scannerIdx] = relToScanner0
                         beaconCoords.addAll(scans[scannerIdx].collect { n -> vectorAdd(n, relToScanner0) })
 
                         freshFinisheds << scannerIdx
@@ -113,7 +113,16 @@ while (finishedScanners.size() < scans.size()) {
     todos = finishedScanners - todos
 }
 
-//println beaconCoords
-println otherScannerPositions
-println beaconCoords.size()
+def manhattanDistance = { a ->
+    a.collect { Math.abs(it) }.sum()
+}
+
+def distances = [].toSet()
+scannerPositions.each { a ->
+    scannerPositions.each { b ->
+        distances << manhattanDistance(vector(a, b))
+    }
+}
+
+println distances.max()
 println "took ${System.currentTimeMillis() - start}ms"
