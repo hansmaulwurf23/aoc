@@ -1,3 +1,4 @@
+def start = System.currentTimeMillis()
 def reg = [:]
 
 def twentySixes = [
@@ -57,17 +58,17 @@ def runMonad = { Long number ->
     return reg.z
 }
 
-//def testNumber = 12947997819399L
+//def testNumber = 12996997829399
 //println runMonad(testNumber)
 
 def d = false
 def r = []
 (1..14).each { r << (9L..1) }
 //r = testNumber.toString().split('')*.toLong().collect { [it] }
+r[0] = [1,2]
 
-def i0 = r[0]
-
-r[0].find {w0 ->
+r[0].each {w0 ->
+Thread.start {
     def extraDigits = 0
     def z0 = w0 + 12
 r[1].find { w1 ->
@@ -143,11 +144,14 @@ r[13].find { w13 ->
     def z13 = (long)(z12 / 26) * (25 * x13 + 1) + ((w13+11) * x13)
     if (d || z13 == 0) {
         println "$w0$w1$w2$w3$w4$w5$w6$w7$w8$w9$w10$w11$w12$w13"
-        println "0 $z0 $z1 $z2 $z3 $z4 $z5 $z6 $z7 $z8 $z9 $z10 $z11 $z12 $z13"
+        //println "0 $z0 $z1 $z2 $z3 $z4 $z5 $z6 $z7 $z8 $z9 $z10 $z11 $z12 $z13"
         return true
     }
 }}}}}}}}}}}}}}
+}
 
 
-println "12996997819399 >"
+//println "12996997829399"
+
+println "took ${System.currentTimeMillis() - start}ms"
 //println runMonad(12345678991234)
