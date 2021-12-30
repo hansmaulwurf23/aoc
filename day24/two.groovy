@@ -51,7 +51,7 @@ def runMonad = { Long number ->
 //println runMonad(testNumber)
 
 def digitRanges = []
-(1..14).each { digitRanges << (9L..1L) }
+(1..14).each { digitRanges << (1L..9L) }
 //r = testNumber.toString().split('')*.toLong().collect { [it] }
 //r[0] = [1,2]
 def t0 = 0

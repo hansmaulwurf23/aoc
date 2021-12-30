@@ -34,7 +34,7 @@ mul y 0
 add y w
 add y 7
 mul y x   y = w + 7
-add z y   [z1 = (z0 * 26) + w + 7]
+add z y   [z1 = z0 * 26 + w1 + 7]
 =====================================
 inp w
 mul x 0
@@ -53,7 +53,7 @@ mul y 0
 add y w
 add y 1
 mul y x    noop
-add z y    [z2 = z1 * 26 + w + 1]
+add z y    [z2 = z1 * 26 + w2 + 1]
 =====================================
 inp w
 mul x 0
@@ -72,7 +72,7 @@ mul y 0
 add y w
 add y 2
 mul y x
-add z y    [z3 = z2 * 26 + w + 2]
+add z y    [z3 = z2 * 26 + w3 + 2]
 =====================================
 inp w
 mul x 0
@@ -81,7 +81,7 @@ mod x 26
 div z 26   z = z3 / 26
 add x -5
 eql x w
-eql x 0   x = ((z3 % 26) - 5) != w ? 1 : 0
+eql x 0   x = ((z3 % 26) - 5) == w4 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -91,7 +91,7 @@ mul y 0
 add y w
 add y 4
 mul y x
-add z y   [z4 = z3 / 26 * (25 * x + 1) + (w+4)*x]
+add z y   [z4 = z3 / 26 * (25 * x + 1) + (w4+4)*x]
 =====================================
 inp w
 mul x 0
@@ -110,7 +110,7 @@ mul y 0
 add y w
 add y 15
 mul y x
-add z y  [z5 = z4 * 26 + w + 15]
+add z y  [z5 = z4 * 26 + w5 + 15]
 =====================================
 inp w
 mul x 0
@@ -129,7 +129,7 @@ mul y 0
 add y w
 add y 11
 mul y x
-add z y   [z6 = z5 * 26 + w + 11]
+add z y   [z6 = z5 * 26 + w6 + 11]
 =====================================
 inp w
 mul x 0
@@ -138,7 +138,7 @@ mod x 26    x = z6 % 26
 div z 26    z = z6 / 26
 add x -13
 eql x w
-eql x 0     x = ((z6 % 26) - 13) != w ? 1 : 0
+eql x 0     x = ((z6 % 26) - 13) == w7 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -148,7 +148,7 @@ mul y 0
 add y w
 add y 5
 mul y x
-add z y    [z7 = z6 / 26 * (25 * x + 1) + (w+5) * x]
+add z y    [z7 = z6 / 26 * (25 * x + 1) + (w7+5) * x]
 =====================================
 inp w
 mul x 0
@@ -157,7 +157,7 @@ mod x 26
 div z 26    z = z6 / 26
 add x -16
 eql x w
-eql x 0     x = ((z7 % 26) - 16) != w ? 1 : 0
+eql x 0     x = ((z7 % 26) - 16) == w8 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -167,7 +167,7 @@ mul y 0
 add y w
 add y 3
 mul y x
-add z y    [z7 = z6 / 26 * (25 * x + 1) + (w+3) * x]
+add z y    [z8 = z7 / 26 * (25 * x + 1) + (w8+3) * x]
 =====================================
 inp w
 mul x 0
@@ -176,7 +176,7 @@ mod x 26
 div z 26
 add x -8
 eql x w
-eql x 0    x = ((z7 % 26) - 8) != w ? 1 : 0
+eql x 0     x = ((z8 % 26) - 8) == w9 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -186,7 +186,7 @@ mul y 0
 add y w
 add y 9
 mul y x
-add z y    [z8 = z7 / 26 * (25 * x + 1) + (w+9) * x]
+add z y    [z9 = z8 / 26 * (25 * x + 1) + (w9+9) * x]
 =====================================
 inp w
 mul x 0
@@ -205,7 +205,7 @@ mul y 0
 add y w
 add y 2
 mul y x
-add z y    [z9 = z8 * 26 + w + 2]
+add z y    [z10 = z9 * 26 + w10 + 2]
 =====================================
 inp w
 mul x 0
@@ -214,7 +214,7 @@ mod x 26
 div z 26   z = z9 / 26
 add x -8
 eql x w
-eql x 0    x = ((z9 % 26) - 8) != w ? 1 : 0
+eql x 0    x = ((z10 % 26) - 8) == w11 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -224,7 +224,7 @@ mul y 0
 add y w
 add y 3
 mul y x
-add z y   [z10 = z9 / 26 * (25 * x + 1) + (w+3) * x]
+add z y   [z11 = z10 / 26 * (25 * x + 1) + (w11+3) * x]
 =====================================
 inp w
 mul x 0
@@ -233,7 +233,7 @@ mod x 26
 div z 26    z = z10 / 26
 add x 0
 eql x w
-eql x 0     x = ((z10 % 26)) != w ? 1 : 0
+eql x 0     x = ((z11 % 26)) == w12 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -243,7 +243,7 @@ mul y 0
 add y w
 add y 3
 mul y x
-add z y   [z11 = z10 / 26 * (25 * x + 1) + (w+3) * x]
+add z y   [z12 = z11 / 26 * (25 * x + 1) + (w12+3) * x]
 =====================================
 inp w
 mul x 0
@@ -252,7 +252,7 @@ mod x 26
 div z 26
 add x -4
 eql x w
-eql x 0    x = ((z11 % 26) - 4) != w ? 1 : 0
+eql x 0    x = ((z12 % 26) - 4) == w13 ? 0 : 1
 mul y 0
 add y 25
 mul y x
@@ -262,4 +262,4 @@ mul y 0
 add y w
 add y 11
 mul y x    y = (w + 11) * x
-add z y   [z11 = z11 / 26 * (25 * x + 1) + (w+11) * x]
+add z y   [z13 = z12 / 26 * (25 * x + 1) + (w13+11) * x]
