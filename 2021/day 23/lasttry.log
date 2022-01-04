@@ -1,0 +1,253 @@
+/usr/lib/jvm/java-8-openjdk-amd64/bin/java -Dtools.jar=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar -Dgroovy.home=/home/unrz266/.sdkman/candidates/groovy/2.4.7 -Dgroovy.starter.conf=/home/unrz266/.sdkman/candidates/groovy/2.4.7/conf/groovy-starter.conf -javaagent:/opt/JetBrains/apps/IDEA-U/ch-0/213.5744.223/lib/idea_rt.jar=43467:/opt/JetBrains/apps/IDEA-U/ch-0/213.5744.223/bin -Dfile.encoding=UTF-8 -classpath /home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-2.4.7.jar org.codehaus.groovy.tools.GroovyStarter --conf /home/unrz266/.sdkman/candidates/groovy/2.4.7/conf/groovy-starter.conf --main groovy.ui.GroovyMain --classpath .:/home/unrz266/git/aoc/out/production/aoc:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-jmx-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/ivy-2.4.0.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/junit-4.12.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-xml-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/jcommander-1.47.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/ant-launcher-1.9.4.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/multiverse-core-0.7.0.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-groovydoc-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/qdox-1.12.1.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/gpars-1.2.1.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/xstream-1.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/ant-junit-1.9.4.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/commons-cli-1.2.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/jansi-1.11.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-templates-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/testng-6.8.13.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-docgenerator-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-groovysh-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/jsr166y-1.7.0.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/jline-2.12.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/ant-1.9.4.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/hamcrest-core-1.3.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-ant-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-json-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-testng-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-console-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/ant-antlr-1.9.4.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-sql-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/commons-logging-1.2.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/servlet-api-2.4.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-nio-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-bsf-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/jsp-api-2.0.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/bsf-2.4.0.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-servlet-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-test-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-swing-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/groovy-jsr223-2.4.7.jar:/home/unrz266/.sdkman/candidates/groovy/2.4.7/lib/xmlpull-1.1.3.1.jar --encoding=UTF-8 /home/unrz266/git/aoc/day23/two.groovy
+[[-1, 2, 1], [-1, 6, 1], [-1, 8, 2], [-1, 6, 3], [-1, 8, 1], [-1, 6, 2], [-1, 4, 3], [-1, 8, 4], [-1, 4, 2], [-1, 8, 3], [-1, 2, 4], [-1, 4, 4], [-1, 4, 1], [-1, 2, 2], [-1, 2, 3], [-1, 6, 4]]
+┌-----------┐
+|...........|
+└-┐A|D|A|B┌-┘
+  |D|C|B|A|
+  |D|B|A|C|
+  |C|C|D|B|
+  └-------┘
+43887
+┌-----------┐
+|...........|
+└-┐A|B|C|D┌-┘
+  |A|B|C|D|
+  |A|B|C|D|
+  |A|B|C|D|
+  └-------┘
+43884
+┌-----------┐
+|A..........|
+└-┐.|B|C|D┌-┘
+  |A|B|C|D|
+  |A|B|C|D|
+  |A|B|C|D|
+  └-------┘
+43874
+┌-----------┐
+|A.........A|
+└-┐.|B|C|D┌-┘
+  |.|B|C|D|
+  |A|B|C|D|
+  |A|B|C|D|
+  └-------┘
+43870
+┌-----------┐
+|AA........A|
+└-┐.|B|C|D┌-┘
+  |.|B|C|D|
+  |.|B|C|D|
+  |A|B|C|D|
+  └-------┘
+43859
+┌-----------┐
+|AA.......AA|
+└-┐.|B|C|D┌-┘
+  |.|B|C|D|
+  |.|B|C|D|
+  |.|B|C|D|
+  └-------┘
+43659
+┌-----------┐
+|AA...C...AA|
+└-┐.|B|.|D┌-┘
+  |.|B|C|D|
+  |.|B|C|D|
+  |.|B|C|D|
+  └-------┘
+42959
+┌-----------┐
+|AA.......AA|
+└-┐.|B|.|D┌-┘
+  |.|B|C|D|
+  |.|B|C|D|
+  |C|B|C|D|
+  └-------┘
+40959
+┌-----------┐
+|AA.....D.AA|
+└-┐.|B|.|.┌-┘
+  |.|B|C|D|
+  |.|B|C|D|
+  |C|B|C|D|
+  └-------┘
+32959
+┌-----------┐
+|AA.......AA|
+└-┐.|B|.|.┌-┘
+  |.|B|C|D|
+  |D|B|C|D|
+  |C|B|C|D|
+  └-------┘
+29959
+┌-----------┐
+|AA.....D.AA|
+└-┐.|B|.|.┌-┘
+  |.|B|C|.|
+  |D|B|C|D|
+  |C|B|C|D|
+  └-------┘
+22959
+┌-----------┐
+|AA.......AA|
+└-┐.|B|.|.┌-┘
+  |D|B|C|.|
+  |D|B|C|D|
+  |C|B|C|D|
+  └-------┘
+22957
+┌-----------┐
+|A........AA|
+└-┐A|B|.|.┌-┘
+  |D|B|C|.|
+  |D|B|C|D|
+  |C|B|C|D|
+  └-------┘
+22917
+┌-----------┐
+|A......B.AA|
+└-┐A|.|.|.┌-┘
+  |D|B|C|.|
+  |D|B|C|D|
+  |C|B|C|D|
+  └-------┘
+22867
+┌-----------┐
+|AB.....B.AA|
+└-┐A|.|.|.┌-┘
+  |D|.|C|.|
+  |D|B|C|D|
+  |C|B|C|D|
+  └-------┘
+22817
+┌-----------┐
+|AB.B...B.AA|
+└-┐A|.|.|.┌-┘
+  |D|.|C|.|
+  |D|B|C|D|
+  |C|.|C|D|
+  └-------┘
+22517
+┌-----------┐
+|AB.B.C.B.AA|
+└-┐A|.|.|.┌-┘
+  |D|.|.|.|
+  |D|B|C|D|
+  |C|.|C|D|
+  └-------┘
+22017
+┌-----------┐
+|AB.B...B.AA|
+└-┐A|.|.|.┌-┘
+  |D|.|.|.|
+  |D|B|C|D|
+  |C|C|C|D|
+  └-------┘
+21617
+┌-----------┐
+|AB.B.C.B.AA|
+└-┐A|.|.|.┌-┘
+  |D|.|.|.|
+  |D|B|.|D|
+  |C|C|C|D|
+  └-------┘
+21317
+┌-----------┐
+|AB.B...B.AA|
+└-┐A|.|.|.┌-┘
+  |D|C|.|.|
+  |D|B|.|D|
+  |C|C|C|D|
+  └-------┘
+20817
+┌-----------┐
+|AB.B.C.B.AA|
+└-┐A|.|.|.┌-┘
+  |D|C|.|.|
+  |D|B|.|D|
+  |C|C|.|D|
+  └-------┘
+20787
+┌-----------┐
+|AB.B.C...AA|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|.|D|
+  |C|C|.|D|
+  └-------┘
+20781
+┌-----------┐
+|AB.B.C....A|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|D|
+  |C|C|.|D|
+  └-------┘
+16781
+┌-----------┐
+|AB.B.C...DA|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|.|
+  |C|C|.|D|
+  └-------┘
+11781
+┌-----------┐
+|AB.B.C.D.DA|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|.|
+  |C|C|.|.|
+  └-------┘
+6781
+┌-----------┐
+|AB.B.C...DA|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|.|
+  |C|C|D|.|
+  └-------┘
+6181
+┌-----------┐
+|AB.B.....DA|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|C|
+  |C|C|D|.|
+  └-------┘
+6091
+┌-----------┐
+|AB.......DA|
+└-┐A|.|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|C|
+  |C|C|D|B|
+  └-------┘
+91
+┌-----------┐
+|AB........A|
+└-┐A|D|.|.┌-┘
+  |D|C|B|.|
+  |D|B|A|C|
+  |C|C|D|B|
+  └-------┘
+87
+┌-----------┐
+|AB.........|
+└-┐A|D|.|.┌-┘
+  |D|C|B|A|
+  |D|B|A|C|
+  |C|C|D|B|
+  └-------┘
+7
+┌-----------┐
+|A..........|
+└-┐A|D|.|B┌-┘
+  |D|C|B|A|
+  |D|B|A|C|
+  |C|C|D|B|
+  └-------┘
+43887
+11055 >
+
+Process finished with exit code 0
