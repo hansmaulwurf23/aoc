@@ -65,9 +65,11 @@ calcPath(0,1)
 def adjacents = [[0,1], [1,0], [0,-1], [-1,0]]
 def stillBetter = true
 while(stillBetter) {
+    print "."
     stillBetter = false
-    riskGrid.eachWithIndex { row, y ->
-        row.eachWithIndex { cellRisk, x ->
+    ((riskGrid.size() - 1)..0).each { y ->
+        ((riskGrid[y].size() - 1)..0).each { x ->
+            def cellRisk = riskGrid[y][x]
             def alternatives = []
             adjacents.each { adj ->
                 def (dx, dy) = adj
