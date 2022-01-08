@@ -1,3 +1,6 @@
+import datetime
+begin_time = datetime.datetime.now()
+
 input = [1, 2, 16, 19, 18, 0]
 # input = [3, 1, 2]
 
@@ -22,3 +25,4 @@ while step < endSteps:
     last = next
 
 print(last)
+print(datetime.datetime.now() - begin_time)
