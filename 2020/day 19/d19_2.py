@@ -46,7 +46,7 @@ with open('./input.txt') as file:
 
     # messages
     matchingMessages = 0
-    special = leafs['42'] + leafs['31']
+    special = leafs['42'] + leafs['42'] + leafs['31'] + leafs['31']
     while line := file.readline().rstrip():
         if regex.match(line):
             matchingMessages += 1
