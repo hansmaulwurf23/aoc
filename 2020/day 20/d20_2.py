@@ -11,9 +11,10 @@ jigsaw = dict()
 image = []
 
 
-def print_tiles():
+def print_tiles(image):
     for row in image:
-        print(f'{"".join([c for c in row])}')
+        print(f'{"".join(row)}')
+        # print(f'{"".join(["," if c == "." else "#" for c in row])}')
 
 
 def edge_to_int(edge):
@@ -73,6 +74,7 @@ def complete_jigsaw_row(leftEdgeTileNo):
         if edges[curTileNo][RIGHT] != edges[nextTileNo][LEFT]:
             vflip_tile(nextTileNo)
 
+        assert jigsaw[nextTileNo][UP] is None or edges[nextTileNo][UP] == edges[jigsaw[nextTileNo][UP]][DOWN]
         curTileNo = nextTileNo
         nextTileNo = jigsaw[nextTileNo][RIGHT]
 
@@ -90,6 +92,7 @@ def complete_jigsaw(topLeftTileNo):
         if edges[curTileNo][DOWN] != edges[nextTileNo][UP]:
             hflip_tile(nextTileNo)
 
+        assert jigsaw[nextTileNo][LEFT] is None
         curTileNo = nextTileNo
 
 
@@ -113,6 +116,26 @@ def assemble_image(topLeftTileNo):
         curTileNo = curRowTileNo
 
 
+def count_pattern(image, pattern):
+    p_width, p_height = max([x for (x, y) in pattern]), max([y for (x, y) in pattern])
+    i_width, i_height = len(image[0]), len(image)
+
+    counter = 0
+    for flip in range(2):
+        for rot in range(4):
+            # print_tiles(image)
+            for y in range(i_height - p_height):
+                for x in range(i_width - p_width):
+                    if all(image[y + dy][x + dx] == '#' for dx, dy in pattern):
+                        counter += 1
+
+            if counter != 0:
+                return counter
+
+            image = rotate_matrix(image)
+        image = vflip_matrix(image)
+
+    return counter
 
 def try_to_connect(tileNo, otherTileNo):
     for i, e in enumerate(edges[tileNo]):
@@ -170,21 +193,16 @@ monster_raw = """
 #    ##    ##    ###
  #  #  #  #  #  #   """
 
-monster = []
+monster_coordinates = []
 for y, row in enumerate(monster_raw.split('\n')[1:]):
     for x, c in enumerate(row):
         if c == '#':
-            monster.append((y, x))
+            monster_coordinates.append((x, y))
 
-print_tiles()
-print('='*96)
-image = rotate_matrix(image)
-print_tiles()
-print('='*96)
-image = rotate_matrix(image)
-print_tiles()
-print('='*96)
-image = rotate_matrix(image)
-print_tiles()
+monster_counter = count_pattern(image, monster_coordinates)
+print(f'{monster_counter} monsters found')
 
+hash_counter = sum([row.count('#') for row in image])
+print(f'{hash_counter} hashes found')
+print(f'{hash_counter - (monster_counter * len(monster_coordinates))} sea roughness')
 print(datetime.datetime.now() - begin_time)
