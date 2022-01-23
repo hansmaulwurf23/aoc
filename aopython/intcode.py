@@ -4,11 +4,13 @@ class IntCodeMachine:
         self.prog = program.copy()
         self.pc = 0
         self.rel_base = rel_base
+        self.terminated = False
 
     def reset(self, program):
         self.prog = program.copy()
         self.pc = 0
         self.rel_base = 0
+        self.terminated = False
 
     def read_op(self, addr, mode):
         real_addr = addr if mode == 1 else self.prog[addr] + (self.rel_base * (mode // 2))
@@ -22,10 +24,15 @@ class IntCodeMachine:
         self.prog[real_addr] = val
 
     def run_to_output(self, inputs):
-        return self._run(inputs, lambda outputs: self.prog[self.pc] == 99 or len(outputs) >= 1)
+        res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99 or len(outputs) >= 1)
+        if self.prog[self.pc] == 99 and len(res) < 1:
+            self.terminated = True
+        return res[0] if len(res) >= 1 else None
 
     def run(self, inputs):
-        return self._run(inputs, lambda outputs: self.prog[self.pc] == 99)
+        res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99)
+        self.terminated = True
+        return res
 
     def _run(self, inputs, halt):
         outputs = []
