@@ -1,10 +1,12 @@
 import datetime
 from itertools import permutations
 
+from intcode import IntCodeMachine
+
 begin_time = datetime.datetime.now()
 
 with open('./input.txt') as f:
-    programm = [int(x) for x in f.readlines()[0].split(',')]
+    program = [int(x) for x in f.readlines()[0].split(',')]
 
 
 def run_prog(prog, inputs, pc):
@@ -67,20 +69,19 @@ def run_prog(prog, inputs, pc):
     return None, pc
 
 
-def run_configuration(programm, phase_sequence, input_signal):
+def run_configuration(program, phase_sequence, input_signal):
     last_out = input_signal
-    progs = [programm.copy() for i in range(5)]
-    pcs = [0 for i in range(5)]
+    vms = [IntCodeMachine(program) for _ in range(5)]
 
     for i in range(5):
-        last_out, pcs[i] = run_prog(progs[i], [phase_sequence.pop(0), last_out], pcs[i])
+        last_out = vms[i].run_to_output([phase_sequence.pop(0), last_out])
 
     all_running = True
     while all_running:
         for i in range(5):
-            last_out, pcs[i] = run_prog(progs[i], [last_out], pcs[i])
+            last_out = vms[i].run_to_output([last_out])
 
-            if last_out is None:
+            if vms[i].terminated:
                 all_running = False
             elif i == 4:
                 amp_e_out = last_out
@@ -90,7 +91,7 @@ def run_configuration(programm, phase_sequence, input_signal):
 
 res = dict()
 for p in permutations([5, 6, 7, 8, 9]):
-    res[p] = run_configuration(programm, list(p), 0)
+    res[p] = run_configuration(program, list(p), 0)
     # print(p, res[p])
 
 print(max(res.values()))
