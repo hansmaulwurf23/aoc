@@ -25,3 +25,10 @@ def manhattan_distance(coords):
     :return: manhattan distance to the center of the coordinate system
     """
     return sum([abs(c) for c in coords])
+
+
+def vector_add(a, b):
+    """
+    Adds two vectors
+    """
+    return [m + n for m, n in zip(a, b)]
