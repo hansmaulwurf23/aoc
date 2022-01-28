@@ -29,6 +29,12 @@ class IntCodeMachine:
             self.terminated = True
         return res[0] if len(res) >= 1 else None
 
+    def run_to_n_outputs(self, inputs, n):
+        res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99 or len(outputs) == n)
+        if self.prog[self.pc] == 99 and len(res) < n:
+            self.terminated = True
+        return res
+
     def run(self, inputs):
         res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99)
         self.terminated = True
