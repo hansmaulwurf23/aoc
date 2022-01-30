@@ -87,3 +87,9 @@ def gcd(a, b):
 def lcm(a, b):
     return abs(a * b) // gcd(a, b)
 
+
+def last_digit(n):
+    if n < 0:
+        return -n % 10
+    else:
+        return n % 10
