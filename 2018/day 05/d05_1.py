@@ -3,18 +3,15 @@ import datetime
 begin_time = datetime.datetime.now()
 
 with open('./input.txt') as f:
-    line = f.readlines()[0].rstrip()
+    line = list(f.readlines()[0].rstrip())
 
-regex = '('
-for l, u in zip(range(ord('a'), ord('z') + 1), range(ord('A'), ord('Z') + 1)):
-        regex += f'{chr(l)}{chr(u)}|{chr(u)}{chr(l)}|'
-regex += '__)+'
+output = []
+ascii_diff = ord('a') - ord('A')
+while len(line):
+    output.append(line.pop(0))
+    while len(output) and len(line) and abs(ord(output[-1]) - ord(line[0])) == ascii_diff:
+        output.pop()
+        line.pop(0)
 
-while newline := re.sub(regex, '', line):
-    if newline == line:
-        break
-    else:
-        # print(len(newline))
-        line = newline
-print(len(line))
+print(len(output))
 print(datetime.datetime.now() - begin_time)
