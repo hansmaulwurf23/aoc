@@ -18,13 +18,17 @@ def min_max_2d(coords):
     return fx, tx, fy, ty
 
 
-def manhattan_distance(coords):
+def manhattan_distance(source, target=None):
     """
     calculates the manhattan distance of the given coords to the center of the dimensions
-    :param coords: n-dimensional iterable holding the coordinates
+    :param source: n-dimensional iterable holding the coordinates
+    :params target: optional n-dimensional iterable holdring the target coordinates
     :return: manhattan distance to the center of the coordinate system
     """
-    return sum([abs(c) for c in coords])
+    if target is None:
+        target = [0] * len(source)
+
+    return sum([abs(s - t) for s, t in zip(source, target)])
 
 
 def vector_add(a, b):
