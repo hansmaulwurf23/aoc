@@ -1,0 +1,11 @@
+_ _ _ _ _ _ _ _ _ _
+  A B C D E F G H I
+  1 2 3 4 5 6 7 8 9
+
+IF !A AND D -> J
+IF !B AND D AND H -> J
+IF !C AND D AND H -> J
+
+!A AND D OR !B AND D AND H OR !C AND D AND H  ->
+(!A OR !B AND H OR !C AND H) AND D  ->
+(!A OR ((!B OR !C) AND H) AND D
