@@ -9,56 +9,44 @@ moves = { (0, 1), (0, -1), (+1, 0), (-1, 0) }
 
 walls = set()
 keys = dict()
-key_loc_to_name = dict()
 doors = dict()
+key_loc_to_name = dict()
 origin = None
-adj_cache = defaultdict(set)
 
-def traverse_breadth_first(root, walls, doors, keys):
-    found_gems = []
+def traverse_breadth_first(root, graph, doors, keys):
+    found_keys = []
     q = deque()
     visited = set()
     visited.add(root)
     q.appendleft((root, 0))
     while len(q):
         node, steps = q.pop()
-        if node in keys:
-            found_gems.append((node, steps))
-        for a, distance in adjacents(node, walls):
+        if node in key_loc_to_name and key_loc_to_name[node] in keys:
+            found_keys.append((node, steps))
+        for a, distance in graph[node]:
             if a in doors:
                 continue
             if a not in visited:
                 visited.add(a)
                 q.appendleft((a, steps + distance))
 
-    return found_gems
+    return found_keys
 
 
 def adjacents(pos, walls):
-    if pos in shortcuts:
-        return tuple([shortcuts[pos]])
-
-    res = []
-    for m in moves:
-        a = tuple(vector_add(pos, m))
-        if a not in walls:
-            res.append((a, 1))
-
-    return res
-
-
-def raw_adjacents(pos, walls):
     for m in moves:
         a = tuple(vector_add(pos, m))
         if a not in walls:
             yield a
 
 
-def next_pos_list(pos, walls, last_pos):
+def adjacent_list(pos, walls, last_pos=None):
     res = []
     for m in moves:
         a = tuple(vector_add(pos, m))
-        if a not in walls and a != last_pos:
+        if last_pos is not None and a == last_pos:
+            continue
+        if a not in walls:
             res.append(a)
 
     return res
@@ -73,11 +61,11 @@ def apply_keys_to_doors(collected_keys, doors):
     return res
 
 
-def possible_new_paths(cur_pos, doors, keys, collected_keys):
+def possible_new_paths(cur_pos, graph, doors, keys, collected_keys):
     new_paths = []
-    found_keys = traverse_breadth_first(cur_pos, walls, apply_keys_to_doors(collected_keys, doors), set(keys.values()))
+    found_keys = traverse_breadth_first(cur_pos, graph, apply_keys_to_doors(collected_keys, doors), keys)
     for key_coords, steps in found_keys:
-        new_paths.append((steps, key_coords, key_loc_to_name[key_coords]))
+        new_paths.append((steps, key_coords))
 
     return new_paths
 
@@ -90,7 +78,7 @@ def get_key_door_dependencies(root, walls, doors, keys):
     key_door_deps = defaultdict(set)
     while len(q):
         node, steps, on_the_way_doors = q.pop()
-        adjs = raw_adjacents(node, walls)
+        adjs = adjacents(node, walls)
         for i, a in enumerate(adjs):
             if a not in visited:
                 visited.add(a)
@@ -113,9 +101,8 @@ def get_dead_ends(walls, root):
     dead_ends = set()
     while len(q):
         proceeded = False
-        # i = 0
         node, steps = q.pop()
-        adjs = raw_adjacents(node, walls)
+        adjs = adjacents(node, walls)
         for i, a in enumerate(adjs):
             if a not in visited:
                 proceeded = True
@@ -136,7 +123,7 @@ def process_dead_ends(walls, dead_ends, keys):
             continue
         last_pos = tuple(d)
         while True:
-            adjs = next_pos_list(d, walls, last_pos)
+            adjs = adjacent_list(d, walls, last_pos)
             walls.add(last_pos)
 
             if len(adjs) > 1:
@@ -149,31 +136,28 @@ def process_dead_ends(walls, dead_ends, keys):
                 break
 
 
-def generate_shortcuts(walls, dead_ends, keys, doors):
-    shortcuts = defaultdict(set)
-    for d in [d for d in dead_ends if d in keys]:
-        cur_key = d
-        last_pos = tuple(d)
-        start_pos = tuple(d)
-        steps = 0
-        while True:
-            adjs = next_pos_list(d, walls, last_pos)
+def generate_graph(root, walls, keys, doors):
+    graph = defaultdict(set)
+    q = deque()
+    visited = set()
+    visited.add(root)
+    q.appendleft((root, 0, root))
+    while len(q):
+        node, steps, last_waypoint = q.pop()
+        adjs = adjacent_list(node, walls)
 
-            if len(adjs) > 1:
-                shortcuts[last_pos].add((start_pos, steps - 1))
-                shortcuts[start_pos].add((last_pos, steps - 1))
-                break
+        if node in keys or node in doors or len(adjs) > 2:
+            graph[node].add((last_waypoint, steps))
+            graph[last_waypoint].add((node, steps))
+            last_waypoint = node
+            steps = 0
 
-            last_pos = tuple(d)
-            d = adjs[0]
-            steps += 1
-            if d in keys or d in doors:
-                shortcuts[last_pos].add((start_pos, steps - 1))
-                shortcuts[start_pos].add((last_pos, steps - 1))
-                start_pos = tuple(d)
-                steps = 0
+        for a in adjs:
+            if a not in visited:
+                visited.add(a)
+                q.appendleft((a, steps + 1, last_waypoint))
 
-    return shortcuts
+    return graph
 
 
 with open('./input.txt') as f:
@@ -194,52 +178,41 @@ with open('./input.txt') as f:
 
 
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
-
 dead_ends = get_dead_ends(walls, origin)
 # showgrid.show_grid(walls, highlights={'r': dead_ends, 'violet':doors.values(), 'y':keys.values()}, s=36)
 process_dead_ends(walls, dead_ends, set(keys.values()))
-showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
+# showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
-
-dead_ends = get_dead_ends(walls, origin)
-shortcuts = generate_shortcuts(walls, dead_ends, set(keys.values()), set(doors.values()))
-
+graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
+# showgrid.show_grid(list(graph.keys()) + [[0,0],[80,80]], s=36)
 
 
 # state is current_steps, current_position, current_collected_keys, rest_keys
-start_state = 0, tuple(origin), tuple(), keys.copy()
+start_state = 0, tuple(origin), tuple(), tuple(keys.keys())
 pq = [start_state]
 visited = set()
 while len(pq) > 0:
     cur_steps, cur_pos, collected_keys, rest_keys = heapq.heappop(pq)
-    # if (len(collected_keys) > 12):
-    print(cur_steps, len(collected_keys), collected_keys)
-
-    # performance gain tests
-    if cur_steps > 700:
-        print('0:00:09.820945')
-        break
+    print(cur_steps, len(collected_keys), collected_keys, len(pq))
 
     if collected_keys in visited:
         continue
     visited.add(collected_keys)
 
-    # cost[cur_pos] = cur_steps
     if len(rest_keys) == 0:
         print(cur_steps)
         break
 
-    for next_state in possible_new_paths(cur_pos, doors, rest_keys, collected_keys):
-        steps, pos, collected_key = next_state
-        new_rest_keys = rest_keys.copy()
-        del new_rest_keys[collected_key]
+    for steps, key_pos in possible_new_paths(cur_pos, graph, doors, rest_keys, collected_keys):
+        collected_key = key_loc_to_name[key_pos]
+        new_rest_keys = list(rest_keys)
+        new_rest_keys.remove(collected_key)
 
         new_collected_keys = tuple(collected_keys + tuple(collected_key))
         if new_collected_keys in visited:
             continue
 
-        # breadcrumbs[next_state[1]] = cur_apods
-        heapq.heappush(pq, (cur_steps + steps, pos, new_collected_keys, new_rest_keys))
+        heapq.heappush(pq, (cur_steps + steps, key_pos, new_collected_keys, new_rest_keys))
 
 
 print('4456 <')
