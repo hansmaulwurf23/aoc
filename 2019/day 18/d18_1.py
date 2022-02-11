@@ -11,6 +11,7 @@ walls = set()
 keys = dict()
 doors = dict()
 key_loc_to_name = dict()
+door_loc_to_name = dict()
 origin = None
 
 def traverse_breadth_first(root, graph, doors, keys):
@@ -89,7 +90,10 @@ def get_key_door_dependencies(root, walls, doors, keys):
                 if a in keys:
                     key_door_deps[a] |= on_the_way_doors
 
-    return key_door_deps
+    names = dict()
+    for k_pos, deps in key_door_deps.items():
+        names[key_loc_to_name[k_pos]] = set(map(lambda x: door_loc_to_name[x], deps))
+    return names
 
 
 # find all coords of dead ends
@@ -173,6 +177,7 @@ with open('./input.txt') as f:
                 key_loc_to_name[(x, y)] = c
             elif ord(c) in range(ord('A'), ord('Z') + 1):
                 doors[c] = (x, y)
+                door_loc_to_name[(x, y)] = c
 
         y += 1
 
