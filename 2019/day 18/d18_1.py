@@ -191,9 +191,12 @@ graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
 start_state = 0, tuple(origin), tuple(), tuple(keys.keys())
 pq = [start_state]
 visited = set()
+last_log = 0
 while len(pq) > 0:
     cur_steps, cur_pos, collected_keys, rest_keys = heapq.heappop(pq)
-    print(cur_steps, len(collected_keys), collected_keys, len(pq))
+    if cur_steps > last_log + 100:
+        print(cur_steps, len(collected_keys), collected_keys, len(pq))
+        last_log = cur_steps
 
     if collected_keys in visited:
         continue
