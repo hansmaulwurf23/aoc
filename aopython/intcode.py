@@ -1,6 +1,7 @@
 class IntCodeMachine:
 
     def __init__(self, program, rel_base=0):
+        self.inputs = None
         self.prog = program.copy()
         self.pc = 0
         self.rel_base = rel_base
