@@ -4,12 +4,14 @@ class IntCodeMachine:
         self.prog = program.copy()
         self.pc = 0
         self.rel_base = rel_base
+        self.outputs = []
         self.terminated = False
 
     def reset(self, program):
         self.prog = program.copy()
         self.pc = 0
         self.rel_base = 0
+        self.outputs = []
         self.terminated = False
 
     def read_op(self, addr, mode):
@@ -23,28 +25,35 @@ class IntCodeMachine:
                 self.prog.append(0)
         self.prog[real_addr] = val
 
+    def read(self):
+        return self.inputs.pop(0)
+
+    def write(self, val):
+        self.outputs.append(val)
+
     def run_to_output(self, inputs):
-        res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99 or len(outputs) >= 1)
+        self.inputs = inputs
+        res = self._run(lambda: self.prog[self.pc] == 99 or len(self.outputs) >= 1)
         if self.prog[self.pc] == 99 and len(res) < 1:
             self.terminated = True
         return res[0] if len(res) >= 1 else None
 
     def run_to_n_outputs(self, inputs, n):
-        res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99 or len(outputs) == n)
+        self.inputs = inputs
+        res = self._run(lambda: self.prog[self.pc] == 99 or len(self.outputs) == n)
         if self.prog[self.pc] == 99 and len(res) < n:
             self.terminated = True
         return res
 
     def run(self, inputs):
-        res = self._run(inputs, lambda outputs: self.prog[self.pc] == 99)
+        self.inputs = inputs
+        res = self._run(lambda: self.prog[self.pc] == 99)
         self.terminated = True
         return res
 
-    def _run(self, inputs, halt):
-        outputs = []
-
+    def _run(self, halt_closure):
         # while self.prog[self.pc] != 99:
-        while not halt(outputs):
+        while not halt_closure():
             raw = self.prog[self.pc]
             opcode = raw % 10
             param_mode1 = (raw // 100) % 10
@@ -65,12 +74,12 @@ class IntCodeMachine:
                 self.pc += 4
             # read
             elif opcode == 3:
-                self.write_res(self.pc + 1, param_mode1, inputs.pop(0))
+                self.write_res(self.pc + 1, param_mode1, self.read())
                 self.pc += 2
             # write
             elif opcode == 4:
                 op1 = self.read_op(self.pc + 1, param_mode1)
-                outputs.append(op1)
+                self.write(op1)
                 self.pc += 2
             # jump-if-true
             elif opcode == 5:
@@ -104,4 +113,4 @@ class IntCodeMachine:
                 print(f'unknown op code! {opcode}')
                 break
 
-        return outputs
+        return self.outputs
