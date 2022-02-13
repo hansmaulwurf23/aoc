@@ -257,13 +257,13 @@ keysets = apply_key_door_deps_to_graph(graph, doors, keys, key_door_deps)
 # showgrid.show_grid(list(graph.keys()) + [[0,0],[80,80]], s=36)
 
 
-# state is current_steps, current_position, current_collected_keys, rest_keys
-start_state = 0, tuple(origin), tuple(), tuple(keys.keys())
+# state is current_steps, current_position, current_collected_keys
+start_state = 0, tuple(origin), tuple()
 pq = [start_state]
 visited = set()
 last_log = 0
 while len(pq) > 0:
-    cur_steps, cur_pos, collected_keys, rest_keys = heapq.heappop(pq)
+    cur_steps, cur_pos, collected_keys = heapq.heappop(pq)
     if cur_steps > last_log + 100:
         print(cur_steps, len(collected_keys), collected_keys, len(pq))
         last_log = cur_steps
@@ -272,17 +272,18 @@ while len(pq) > 0:
         continue
     visited.add(collected_keys)
 
+    rest_keys = tuple([k for k in keys.keys() if k not in collected_keys])
     if len(rest_keys) == 0:
         print(cur_steps)
         break
 
     for found_keys, last_pos, steps in possible_new_paths(cur_pos, graph, doors, keysets, rest_keys, collected_keys):
-        new_rest_keys = tuple(k for k in rest_keys if k not in found_keys)
+        # new_rest_keys = tuple(k for k in rest_keys if k not in found_keys)
         new_collected_keys = tuple(collected_keys + tuple(found_keys))
         if new_collected_keys in visited:
             continue
 
-        heapq.heappush(pq, (cur_steps + steps, last_pos, new_collected_keys, new_rest_keys))
+        heapq.heappush(pq, (cur_steps + steps, last_pos, new_collected_keys))
 
 print(cur_steps, cur_pos, collected_keys, rest_keys)
 print('4456 <')
