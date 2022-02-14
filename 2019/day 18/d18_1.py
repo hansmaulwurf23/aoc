@@ -20,11 +20,12 @@ def traverse_breadth_first(root, graph, doors, keysets, rest_keys):
     q = deque()
     visited = set()
     visited.add(root)
-    q.appendleft((root, 0))
+    q.appendleft((root, 0, []))
     while len(q):
-        node, steps = q.pop()
+        node, steps, on_the_way_keys = q.pop()
         if node in key_loc_to_name and key_loc_to_name[node] in rest_keys:
-            found_keysets.append(([key_loc_to_name[node]], node, steps))
+            on_the_way_keys.append(key_loc_to_name[node])
+            found_keysets.append((on_the_way_keys, node, steps))
         if node in keysets:
             ks_keys, rtsteps, alt_end, altsteps = keysets[node]
             if ks_keys[0] in rest_keys:
@@ -37,14 +38,14 @@ def traverse_breadth_first(root, graph, doors, keysets, rest_keys):
             if alt_end:
                 if alt_end not in visited:
                     visited.add(alt_end)
-                    q.appendleft((alt_end, steps + altsteps))
+                    q.appendleft((alt_end, steps + altsteps, on_the_way_keys.copy()))
 
         for a, distance in graph[node]:
             if a in doors:
                 continue
             if a not in visited:
                 visited.add(a)
-                q.appendleft((a, steps + distance))
+                q.appendleft((a, steps + distance, on_the_way_keys.copy()))
 
     return found_keysets
 
@@ -105,6 +106,7 @@ def get_key_door_dependencies(root, walls, doors, keys):
     names = dict()
     for k_pos, deps in key_door_deps.items():
         names[key_loc_to_name[k_pos]] = tuple(map(lambda x: door_loc_to_name[x], deps))
+        print(f'{key_loc_to_name[k_pos]} blocked by {names[key_loc_to_name[k_pos]]}')
     return names
 
 
@@ -131,7 +133,7 @@ def get_dead_ends(walls, root):
     return dead_ends
 
 
-def process_dead_ends(walls, dead_ends, keys):
+def simplify_dead_ends(walls, dead_ends, keys):
     """starting from all dead ends, go back as long as no key or crossing (multiple adjacents) are found and convert
     the way back to a wall """
     for d in dead_ends:
@@ -176,7 +178,7 @@ def generate_graph(root, walls, keys, doors):
     return graph
 
 
-def apply_key_door_deps_to_graph(graph, doors, keys, key_door_deps):
+def generate_keysets(graph, doors, keys, key_door_deps):
     todos = defaultdict(list)
     for k, locking_doors in key_door_deps.items():
         if len(locking_doors):
@@ -247,13 +249,13 @@ with open('./input.txt') as f:
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 dead_ends = get_dead_ends(walls, origin)
 # showgrid.show_grid(walls, highlights={'r': dead_ends, 'violet':doors.values(), 'y':keys.values()}, s=36)
-process_dead_ends(walls, dead_ends, set(keys.values()))
+simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
-# showgrid.show_grid(walls, highlights={'r':doors, 'y':keys}, s=36, minTicks=False, c='lightgrey')
+# showgrid.show_grid(walls, highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
-keysets = apply_key_door_deps_to_graph(graph, doors, keys, key_door_deps)
+keysets = generate_keysets(graph, doors, keys, key_door_deps)
 # showgrid.show_grid(list(graph.keys()) + [[0,0],[80,80]], s=36)
 
 
