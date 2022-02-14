@@ -13,6 +13,7 @@ doors = dict()
 key_loc_to_name = dict()
 door_loc_to_name = dict()
 origin = None
+keysets = dict()
 
 
 def traverse_breadth_first(root, graph, doors, keysets, rest_keys):
@@ -224,12 +225,12 @@ def generate_keysets(graph, doors, keys, key_door_deps):
         else:
             # same door dependency keys in dead end area so collecting all and going back -> * 2
             last_door_loot[last_door] = (todokeys, sum_steps * 2, door_furhter_down, 0)
-        print(f'keys frozen to set {todokeys} with door dependency {tododoors}')
+        print(f'keys frozen to set {todokeys} with door dependency {tododoors}: {last_door}->{last_door_loot[last_door]}')
 
     return last_door_loot
 
 
-with open('./input.txt') as f:
+with open('./test2.txt') as f:
     y = 0
     while line := f.readline().rstrip():
         for x, c in enumerate(line):
@@ -255,7 +256,7 @@ simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
-keysets = generate_keysets(graph, doors, keys, key_door_deps)
+# keysets = generate_keysets(graph, doors, keys, key_door_deps)
 # showgrid.show_grid(list(graph.keys()) + [[0,0],[80,80]], s=36)
 
 
