@@ -13,10 +13,9 @@ for addr in range(50):
 while True:
     try:
         for i, vm in enumerate(network):
-            print(i, vm.in_queue, vm.outputs)
             vm.run_to_input([])
     except BroadcastException as e:
-        print(f'{e.vals}')
+        print(f'{e.vals[1]}')
         break
 
 print(datetime.datetime.now() - begin_time)

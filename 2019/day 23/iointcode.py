@@ -14,21 +14,32 @@ class IOIntCodeMachine(IntCodeMachine):
         self.in_queue = initial_in
         self.network = network
         self.processed_read = False
+        self.empty_reads = 0
+        self.idle = False
 
     def read(self):
         self.processed_read = True
         if self.in_queue:
+            self.idle = False
+            self.empty_reads = 0
             return self.in_queue.pop(0)
-        return -1
+        else:
+            self.empty_reads += 1
+            if self.empty_reads >= 2:
+                self.idle = True
+            return -1
 
     def write(self, val):
         self.outputs.append(val)
+        self.idle = False
+        self.unserviced_reads = 0
 
         if len(self.outputs) == 3:
             dest_addr, x, y = self.outputs
             self.outputs = []
 
             if dest_addr == 255:
+                self.pc += 2
                 raise BroadcastException([x, y])
             else:
                 self.network[dest_addr].in_queue.append(x)
