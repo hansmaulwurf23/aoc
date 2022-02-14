@@ -304,7 +304,7 @@ while len(pq) > 0:
     #     last_log = cur_steps
 
     if all([x == y for (x, y) in zip(collected_keys, log_master)]):
-        print(cur_steps, len(collected_keys), collected_keys, len(pq))
+        print(cur_steps, len(collected_keys), cur_pos, collected_keys, len(pq))
 
     if collected_keys in visited:
         continue
@@ -317,7 +317,7 @@ while len(pq) > 0:
 
     for found_keys, last_pos, steps in possible_new_paths(cur_pos, graph, doors, keysets, rest_keys, collected_keys):
         # new_rest_keys = tuple(k for k in rest_keys if k not in found_keys)
-        new_collected_keys = tuple(collected_keys + tuple(found_keys))
+        new_collected_keys = tuple(collected_keys) + tuple(found_keys)
         if new_collected_keys in visited:
             continue
 

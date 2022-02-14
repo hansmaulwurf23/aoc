@@ -1,0 +1,54 @@
+51 bis H
+29 zur Kreuzung
+16 zum W
+16 zurueck zur Kreuzung
+32 bis j
+18 zu b
+18 zu j
+32 bis Kreuzung
+29 bis H
+= 241
+laut log = 213 (-28)
+
+51 bis S
+3 bis G
+73 bis Kr
+25 bis L
+23 bis K
+34 bis Mitte
+2
+8 bis D
+4 bis KR
+58 bis a
+29 bis O
+12 bis Q
+11 bis m
+88 bis Kr
+10 zu z
+10 zu Kr
+114 bis f
+114 bis Kr
+88 zu m
+11 bis Q
+= 768
+laut log = 878 (+110)
+
+97 C bis M
+87 bis Kr
+29 bis D
+19 zur Mitte (232)
+2
+8 bis D
+4 bis KR
+58 bis a
+29 bis O
+12 bis Q
+= 344 (m -> c)
+laut log = 347
+
+4706 - 4414 = 292
+
+mzf 446
+wjb 292R 162W
+
+{(door_loc_to_name[d] if d in door_loc_to_name else (key_loc_to_name[d] if d in key_loc_to_name else d)): v for (d, v) in graph.items()}
