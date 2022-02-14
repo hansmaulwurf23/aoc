@@ -179,6 +179,35 @@ def generate_graph(root, walls, keys, doors):
     return graph
 
 
+def bfs(root, target, walls):
+    q = deque()
+    visited = set()
+    visited.add(root)
+    q.appendleft((root, 0))
+    while len(q):
+        node, steps = q.pop()
+        adjs = adjacent_list(node, walls)
+
+        if node == target:
+            return steps
+
+        for a in adjs:
+            if a not in visited:
+                visited.add(a)
+                q.appendleft((a, steps + 1))
+
+def calc_len(sequence):
+    order = deque(sequence)
+    root = keys[order.popleft()]
+    steps = 0
+    for target in map(lambda k: keys[k], order):
+        steps += bfs(root, target, walls)
+        root = target
+
+    return steps
+
+
+
 def generate_keysets(graph, doors, keys, key_door_deps):
     todos = defaultdict(list)
     for k, locking_doors in key_door_deps.items():
@@ -253,6 +282,7 @@ dead_ends = get_dead_ends(walls, origin)
 simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 # showgrid.show_grid(walls, highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
+print(calc_len(('d', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'e', 'p')))
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
@@ -265,11 +295,16 @@ start_state = 0, tuple(origin), tuple()
 pq = [start_state]
 visited = set()
 last_log = 0
+log_master = ('d', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y',
+              'u', 'n', 'i', 'e', 'p')
 while len(pq) > 0:
     cur_steps, cur_pos, collected_keys = heapq.heappop(pq)
-    if cur_steps > last_log + 100:
+    # if cur_steps > last_log + 100:
+    #     print(cur_steps, len(collected_keys), collected_keys, len(pq))
+    #     last_log = cur_steps
+
+    if all([x == y for (x, y) in zip(collected_keys, log_master)]):
         print(cur_steps, len(collected_keys), collected_keys, len(pq))
-        last_log = cur_steps
 
     if collected_keys in visited:
         continue
