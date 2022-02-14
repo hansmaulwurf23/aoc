@@ -230,7 +230,7 @@ def generate_keysets(graph, doors, keys, key_door_deps):
     return last_door_loot
 
 
-with open('./test2.txt') as f:
+with open('./input.txt') as f:
     y = 0
     while line := f.readline().rstrip():
         for x, c in enumerate(line):
