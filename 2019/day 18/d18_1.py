@@ -256,7 +256,7 @@ simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
-# keysets = generate_keysets(graph, doors, keys, key_door_deps)
+keysets = generate_keysets(graph, doors, keys, key_door_deps)
 # showgrid.show_grid(list(graph.keys()) + [[0,0],[80,80]], s=36)
 
 
