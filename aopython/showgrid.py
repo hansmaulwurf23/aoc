@@ -36,3 +36,10 @@ def show_heatmap(points, highlights=None, marker='s', s=160):
     colors = list(map(lambda x: x[2], points))
     show_grid(points, highlights=highlights, marker=marker, c=colors, s=s)
 
+
+def pcolormesh(points):
+    fig, ax = plt.subplots()
+    fig.set(figwidth=10, figheight=10, dpi=100)
+    plt.pcolormesh(points)
+    plt.show()
+
