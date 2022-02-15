@@ -43,3 +43,10 @@ def pcolormesh(points):
     plt.pcolormesh(points)
     plt.show()
 
+
+def plot_xy(data):
+    x = list(map(lambda x: x[0], data))
+    y = list(map(lambda x: x[1], data))
+    plt.plot(x, y)
+    plt.show()
+
