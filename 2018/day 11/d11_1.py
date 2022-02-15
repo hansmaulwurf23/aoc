@@ -53,13 +53,15 @@ def print_grid(grid):
 def plot_grid(grid):
     res = []
     for y in range(1, GRD_SIZE + 1):
+        row = []
         for x in range(1, GRD_SIZE + 1):
-            res.append((x, y, grid[(x, y)]))
-    showgrid.show_heatmap(res, s=16)
+            row.append(grid[(x, y)])
+        res.append(row)
+    showgrid.pcolormesh(res)
 
 
 grid = calc_grid(SERIAL)
-print_grid(grid)
+# print_grid(grid)
 plot_grid(grid)
 print(find_max_level(grid))
 print(datetime.datetime.now() - begin_time)
