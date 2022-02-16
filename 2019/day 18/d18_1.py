@@ -27,10 +27,10 @@ def traverse_breadth_first(root, graph, doors, keysets, rest_keys):
         if node in key_loc_to_name and key_loc_to_name[node] in rest_keys:
             on_the_way_keys.append(key_loc_to_name[node])
             found_keysets.append((on_the_way_keys, node, steps))
-        if node in keysets:
+        if node in keysets and keysets[node][0][0] in rest_keys:
             ks_keys, rtsteps, alt_end, altsteps = keysets[node]
             if ks_keys[0] in rest_keys:
-                if alt_end:
+                if alt_end and len(list(filter(lambda a: a not in visited and a not in doors, adjacent_list(alt_end, walls)))):
                     found_keysets.append((ks_keys, alt_end, steps + altsteps))
                 else:
                     found_keysets.append((ks_keys, node, steps + rtsteps))
@@ -198,11 +198,13 @@ def bfs(root, target, walls):
 
 def calc_len(sequence):
     order = deque(sequence)
-    root = keys[order.popleft()]
+    root = order.popleft()
+    root = keys[root] if root in keys else root
     steps = 0
-    for target in map(lambda k: keys[k], order):
+    for target in map(lambda k: keys[k] if k in keys else k, order):
         steps += bfs(root, target, walls)
         root = target
+        print(f'found {key_loc_to_name[target]} after {steps} steps')
 
     return steps
 
@@ -282,7 +284,7 @@ dead_ends = get_dead_ends(walls, origin)
 simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 # showgrid.show_grid(walls, highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
-print(calc_len(('d', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'e', 'p')))
+print(calc_len((origin, 'd', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'e', 'p')))
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
@@ -324,5 +326,6 @@ while len(pq) > 0:
         heapq.heappush(pq, (cur_steps + steps, last_pos, new_collected_keys))
 
 print(cur_steps, cur_pos, collected_keys, rest_keys)
+print('4424 <')
 print('4456 <')
 print(datetime.datetime.now() - begin_time)
