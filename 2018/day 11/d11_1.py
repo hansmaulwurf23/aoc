@@ -40,7 +40,7 @@ def find_max_level(grid):
                     max_sum = cur_sum
                     max_pos = (x-2, y)
 
-    return max_pos
+    return max_pos, max_sum
 
 
 def print_grid(grid):
@@ -62,6 +62,6 @@ def plot_grid(grid):
 
 grid = calc_grid(SERIAL)
 # print_grid(grid)
-plot_grid(grid)
+# plot_grid(grid)
 print(find_max_level(grid))
 print(datetime.datetime.now() - begin_time)
