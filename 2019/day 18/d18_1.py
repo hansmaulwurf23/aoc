@@ -252,11 +252,11 @@ def generate_keysets(graph, doors, keys, key_door_deps):
                     last_pos = dead_end_key_pos
                     dead_end_key_pos = a
 
-            last_door_loot[last_door] = (todokeys, sum_steps * 2, door_furhter_down, sum_steps + going_back_steps)
+            # last_door_loot[last_door] = (todokeys, sum_steps * 2, door_furhter_down, sum_steps + going_back_steps)
         else:
             # same door dependency keys in dead end area so collecting all and going back -> * 2
             last_door_loot[last_door] = (todokeys, sum_steps * 2, door_furhter_down, 0)
-        print(f'keys frozen to set {todokeys} with door dependency {tododoors}: {last_door}->{last_door_loot[last_door]}')
+            print(f'keys frozen to set {todokeys} with door dependency {tododoors}: {last_door}->{last_door_loot[last_door]}')
 
     return last_door_loot
 
@@ -284,7 +284,7 @@ dead_ends = get_dead_ends(walls, origin)
 simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 # showgrid.show_grid(walls, highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
-print(calc_len((origin, 'd', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'e', 'p')))
+# print(calc_len((origin, 'd', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'e', 'p')))
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
