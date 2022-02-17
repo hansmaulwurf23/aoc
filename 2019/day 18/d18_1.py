@@ -278,13 +278,15 @@ with open('./input.txt') as f:
 
         y += 1
 
+# found next set in earlier tries (with wrong result) and using this for debugging (see dijkstra and calc_len below)
+log_master = ('d', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'w', 'e', 'p')
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 dead_ends = get_dead_ends(walls, origin)
 # showgrid.show_grid(walls, highlights={'r': dead_ends, 'violet':doors.values(), 'y':keys.values()}, s=36)
 simplify_dead_ends(walls, dead_ends, set(keys.values()))
 # showgrid.show_grid(walls, highlights={'r':doors.values(), 'y':keys.values()}, s=36)
 # showgrid.show_grid(walls, highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
-# print(calc_len((origin, 'd', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y', 'u', 'n', 'i', 'e', 'p')))
+print(calc_len([origin] + list(log_master)))
 # exit(0)
 key_door_deps = get_key_door_dependencies(origin, walls, set(doors.values()), set(keys.values()))
 graph = generate_graph(origin, walls, set(keys.values()), set(doors.values()))
@@ -297,8 +299,7 @@ start_state = 0, tuple(origin), tuple()
 pq = [start_state]
 visited = set()
 last_log = 0
-log_master = ('d', 'a', 'l', 'g', 'x', 'h', 'q', 'k', 'o', 's', 'w', 'j', 'b', 'm', 'z', 'f', 'c', 'r', 'v', 't', 'y',
-              'u', 'n', 'i', 'e', 'p')
+
 while len(pq) > 0:
     cur_steps, cur_pos, collected_keys = heapq.heappop(pq)
     # if cur_steps > last_log + 100:
