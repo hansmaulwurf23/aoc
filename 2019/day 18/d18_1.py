@@ -1,9 +1,9 @@
 import datetime
-import heapq
 import math
 from collections import deque, defaultdict
 import showgrid
 from aopython import vector_add
+from itertools import product
 
 begin_time = datetime.datetime.now()
 moves = {(0, 1), (0, -1), (+1, 0), (-1, 0)}
@@ -121,7 +121,7 @@ def get_key_door_dependencies(root, doors, keys):
     names = dict()
     for k_pos, deps in key_door_deps.items():
         names[key_loc_to_name[k_pos]] = set(map(lambda x: door_loc_to_name[x].lower(), deps))
-        print(f'{key_loc_to_name[k_pos]} needs keys {names[key_loc_to_name[k_pos]]}')
+        # print(f'{key_loc_to_name[k_pos]} needs keys {names[key_loc_to_name[k_pos]]}')
     return names
 
 
@@ -153,8 +153,8 @@ def collect_rest_keys(cur_key_pos, rest_keys):
 
 with open('./input.txt') as f:
     y = 0
-    walls.append([])
     while line := f.readline().rstrip():
+        walls.append([])
         for x, c in enumerate(line):
             walls[y].append(1 if c == '#' else 0)
             if c == '@':
@@ -166,10 +166,14 @@ with open('./input.txt') as f:
                 doors[c] = (x, y)
                 door_loc_to_name[(x, y)] = c
 
-        walls.append([])
         y += 1
 
 simplify_maze(walls, get_dead_ends(origin), set(keys.values()))
+
+# showgrid.show_grid([(x, y) for x, y in list(product(range(len(walls)), range(len(walls[0])))) if walls[y][x]],
+#                    highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
+
 key_requires_keys = get_key_door_dependencies(origin, set(doors.values()), set(keys.values()))
+
 print(collect_rest_keys(origin, tuple(keys.keys())))
 print(datetime.datetime.now() - begin_time)
