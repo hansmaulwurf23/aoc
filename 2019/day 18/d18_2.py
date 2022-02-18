@@ -1,9 +1,9 @@
 import datetime
-import heapq
 import math
 from collections import deque, defaultdict
 import showgrid
 from aopython import vector_add
+from itertools import product
 
 begin_time = datetime.datetime.now()
 moves = {(0, 1), (0, -1), (+1, 0), (-1, 0)}
@@ -70,7 +70,7 @@ def get_dead_ends(root):
                 visited.add(a)
                 q.appendleft((a, steps + 1))
 
-        if not proceeded and i == 0:
+        if not proceeded and i == 0 and node != root:
             dead_ends.add(node)
 
     return dead_ends
@@ -121,21 +121,21 @@ def get_key_door_dependencies(root, doors, keys):
     names = dict()
     for k_pos, deps in key_door_deps.items():
         names[key_loc_to_name[k_pos]] = set(map(lambda x: door_loc_to_name[x].lower(), deps))
-        print(f'{key_loc_to_name[k_pos]} needs keys {names[key_loc_to_name[k_pos]]}')
+        # print(f'{key_loc_to_name[k_pos]} needs keys {names[key_loc_to_name[k_pos]]}')
     return names
 
 
-def reachable_keys(rest_keys):
+def reachable_keys(rest_keys, i):
     collected_keys = set([k for k in keys.keys() if k not in rest_keys])
     reachable = []
     for rk in rest_keys:
-        if key_requires_keys[rk].issubset(collected_keys):
+        if rk in key_requires_keys[i] and key_requires_keys[i][rk].issubset(collected_keys):
             reachable.append(rk)
 
     return reachable
 
 
-def collect_rest_keys(cur_key_pos, rest_keys):
+def collect_rest_keys(cur_key_pos, i, rest_keys):
     if len(rest_keys) == 0:
         return 0
 
@@ -143,22 +143,30 @@ def collect_rest_keys(cur_key_pos, rest_keys):
         return cache[(cur_key_pos, rest_keys)]
 
     result = math.inf
-    for key in reachable_keys(rest_keys):
-       d = bfs(cur_key_pos, keys[key]) + collect_rest_keys(keys[key], tuple([k for k in rest_keys if k != key]))
+    for key in reachable_keys(rest_keys, i):
+       d = bfs(cur_key_pos, keys[key]) + collect_rest_keys(keys[key], i, tuple([k for k in rest_keys if k != key]))
        result = min(result, d)
 
     cache[(cur_key_pos, rest_keys)] = result
     return result
 
 
+def collect_keys(origins):
+    sum = 0
+    for i, origin in enumerate(origins):
+        sum += collect_rest_keys(origin, i, tuple(keys.keys()))
+
+    return sum
+
+
 with open('./input.txt') as f:
     y = 0
-    walls.append([])
     while line := f.readline().rstrip():
+        walls.append([])
         for x, c in enumerate(line):
             walls[y].append(1 if c == '#' else 0)
             if c == '@':
-                origin = (x, y)
+                center = (x, y)
             elif ord(c) in range(ord('a'), ord('z') + 1):
                 keys[c] = (x, y)
                 key_loc_to_name[(x, y)] = c
@@ -166,19 +174,25 @@ with open('./input.txt') as f:
                 doors[c] = (x, y)
                 door_loc_to_name[(x, y)] = c
 
-        walls.append([])
         y += 1
 
 # part two modifications
 origins = []
 for dx, dy in [(1,1), (1,-1), (-1,1), (-1,-1)]:
-    origins = vector_add(origins, (dx, dy))
+    origins.append(tuple(vector_add(center, (dx, dy))))
 
-for ax, ay in adjacents(origin):
+simplify_maze(walls, get_dead_ends(center), set(keys.values()))
+
+for ax, ay in adjacents(center):
     walls[ay][ax] = 1
-walls[origin[1]][origin[0]] = 1
+walls[center[1]][center[0]] = 1
 
-simplify_maze(walls, get_dead_ends(origin), set(keys.values()))
-key_requires_keys = get_key_door_dependencies(origin, set(doors.values()), set(keys.values()))
-print(collect_rest_keys(origin, tuple(keys.keys())))
+key_requires_keys = []
+for origin in origins:
+    key_requires_keys.append(get_key_door_dependencies(origin, set(doors.values()), set(keys.values())))
+
+showgrid.show_grid([(x, y) for x, y in list(product(range(len(walls)), range(len(walls[0])))) if walls[y][x]],
+                   highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
+print(collect_keys(origins))
+print('2128 ?')
 print(datetime.datetime.now() - begin_time)
