@@ -135,28 +135,25 @@ def reachable_keys(rest_keys, i):
     return reachable
 
 
-def collect_rest_keys(cur_key_pos, i, rest_keys):
+def collect_rest_keys(cur_key_positions, rest_keys):
     if len(rest_keys) == 0:
         return 0
 
-    if (cur_key_pos, rest_keys) in cache:
-        return cache[(cur_key_pos, rest_keys)]
+    if (cur_key_positions, rest_keys) in cache:
+        return cache[(cur_key_positions, rest_keys)]
 
     result = math.inf
-    for key in reachable_keys(rest_keys, i):
-       d = bfs(cur_key_pos, keys[key]) + collect_rest_keys(keys[key], i, tuple([k for k in rest_keys if k != key]))
-       result = min(result, d)
+
+    for i, cur_key_pos in enumerate(cur_key_positions):
+        for key in reachable_keys(rest_keys, i):
+            new_key_positions = list(cur_key_positions)
+            new_key_positions[i] = keys[key]
+            d = bfs(cur_key_pos, keys[key]) + collect_rest_keys(tuple(new_key_positions), tuple([k for k in rest_keys if k != key]))
+            result = min(result, d)
 
     cache[(cur_key_pos, rest_keys)] = result
     return result
 
-
-def collect_keys(origins):
-    sum = 0
-    for i, origin in enumerate(origins):
-        sum += collect_rest_keys(origin, i, tuple(keys.keys()))
-
-    return sum
 
 
 with open('./input.txt') as f:
@@ -191,8 +188,8 @@ key_requires_keys = []
 for origin in origins:
     key_requires_keys.append(get_key_door_dependencies(origin, set(doors.values()), set(keys.values())))
 
-showgrid.show_grid([(x, y) for x, y in list(product(range(len(walls)), range(len(walls[0])))) if walls[y][x]],
-                   highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
-print(collect_keys(origins))
+# showgrid.show_grid([(x, y) for x, y in list(product(range(len(walls)), range(len(walls[0])))) if walls[y][x]],
+#                    highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
+print(collect_rest_keys(tuple(origins), tuple(keys.keys())))
 print('2128 ?')
 print(datetime.datetime.now() - begin_time)
