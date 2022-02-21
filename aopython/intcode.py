@@ -111,7 +111,7 @@ class IntCodeMachine:
                     self.rel_base += self.prog[self.prog[self.pc + 1] + (self.rel_base * (param_mode1 // 2))]
                 self.pc += 2
             else:
-                print(f'unknown op code! {opcode}')
+                raise Exception(f'unknown op code! {opcode}')
                 break
 
         return self.outputs
