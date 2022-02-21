@@ -107,15 +107,16 @@ def get_dead_ends(root):
     while len(q):
         proceeded = False
         node = q.pop()
-        visited.add(node)
         if node in portals:
             q.append(portals[node][0])
             continue
 
         adjs = adjacents(node)
         for i, a in enumerate(adjs):
-            proceeded = True
-            q.appendleft(a)
+            if a not in visited:
+                proceeded = True
+                visited.add(a)
+                q.appendleft(a)
 
         if not proceeded and i == 0:
             dead_ends.add(node)
@@ -126,6 +127,7 @@ def get_dead_ends(root):
 def simplify_dead_ends(walls, dead_ends):
     """starting from all dead ends, go back as long as no key or crossing (multiple adjacents) are found and convert
     the way back to a wall """
+    print(f'simplifying {len(dead_ends)} dead ends')
     for d in dead_ends:
         last_pos = tuple(d)
         while True:
