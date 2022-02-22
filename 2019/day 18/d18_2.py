@@ -143,7 +143,6 @@ def collect_rest_keys(cur_key_positions, rest_keys):
         return cache[(cur_key_positions, rest_keys)]
 
     result = math.inf
-
     for i, cur_key_pos in enumerate(cur_key_positions):
         for key in reachable_keys(rest_keys, i):
             new_key_positions = list(cur_key_positions)
@@ -151,9 +150,8 @@ def collect_rest_keys(cur_key_positions, rest_keys):
             d = bfs(cur_key_pos, keys[key]) + collect_rest_keys(tuple(new_key_positions), tuple([k for k in rest_keys if k != key]))
             result = min(result, d)
 
-    cache[(cur_key_pos, rest_keys)] = result
+    cache[(cur_key_positions, rest_keys)] = result
     return result
-
 
 
 with open('./input.txt') as f:
