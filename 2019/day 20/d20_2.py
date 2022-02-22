@@ -51,11 +51,11 @@ def get_portals(grid):
 
                 walls.add((x, y))
 
-    # plot = defaultdict(set)
-    # for snode, target in portals.items():
-    #     tnode, ldelta = target
-    #     plot['g' if ldelta < 0 else 'r'].add(snode)
-    # showgrid.show_grid(walls, highlights=plot, s=120)
+    plot = defaultdict(set)
+    for snode, target in portals.items():
+        tnode, ldelta = target
+        plot['g' if ldelta < 0 else 'r'].add(snode)
+    showgrid.show_grid(walls, highlights=plot, s=120)
 
     return portals, parts['AA'][0], parts['ZZ'][0]
 
@@ -108,8 +108,11 @@ def get_dead_ends(root):
         proceeded = False
         node = q.pop()
         if node in portals:
-            q.append(portals[node][0])
-            continue
+            if portals[node][0] not in visited:
+                visited.add(portals[node][0])
+                q.append(portals[node][0])
+                print(f'jumping from {node} to {portals[node][0]}')
+                continue
 
         adjs = adjacents(node)
         for i, a in enumerate(adjs):
