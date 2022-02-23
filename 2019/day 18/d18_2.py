@@ -3,7 +3,6 @@ import math
 from collections import deque, defaultdict
 import showgrid
 from aopython import vector_add
-from itertools import product
 
 begin_time = datetime.datetime.now()
 moves = {(0, 1), (0, -1), (+1, 0), (-1, 0)}
@@ -16,6 +15,7 @@ door_loc_to_name = dict()
 origin = None
 cache = dict()
 bfs_cache = dict()
+rk_cache = dict()
 
 
 def bfs(root, target):
@@ -126,12 +126,16 @@ def get_key_door_dependencies(root, doors, keys):
 
 
 def reachable_keys(rest_keys, i):
+    if (rest_keys, i) in rk_cache:
+        return rk_cache[(rest_keys, i)]
+
     collected_keys = set([k for k in keys.keys() if k not in rest_keys])
     reachable = []
     for rk in rest_keys:
         if rk in key_requires_keys[i] and key_requires_keys[i][rk].issubset(collected_keys):
             reachable.append(rk)
 
+    rk_cache[(rest_keys, i)] = reachable
     return reachable
 
 
@@ -186,8 +190,5 @@ key_requires_keys = []
 for origin in origins:
     key_requires_keys.append(get_key_door_dependencies(origin, set(doors.values()), set(keys.values())))
 
-# showgrid.show_grid([(x, y) for x, y in list(product(range(len(walls)), range(len(walls[0])))) if walls[y][x]],
-#                    highlights={'r':doors, 'b':keys}, s=36, minTicks=False, c='lightgrey', highlightsize=64)
 print(collect_rest_keys(tuple(origins), tuple(keys.keys())))
-print('2128 ?')
 print(datetime.datetime.now() - begin_time)
