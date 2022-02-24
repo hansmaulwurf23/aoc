@@ -7,7 +7,7 @@ def scatter(points, *, marker='s', c='#1f77b4', s=160):
     plt.scatter(x, y, s=s, c=c, marker=marker)
 
 
-def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=True, highlightsize=15):
+def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=True, highlightsize=15, no_show=False):
     fig, ax = plt.subplots()
     fig.set(figwidth=10, figheight=10, dpi=100)
 
@@ -29,7 +29,9 @@ def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=
 
     plt.grid(True)
     plt.grid(True, which='minor')
-    plt.show()
+    if not no_show:
+        plt.show()
+    return plt
 
 
 def show_heatmap(points, highlights=None, marker='s', s=160):
