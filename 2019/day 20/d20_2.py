@@ -5,7 +5,16 @@ import showgrid
 from aopython import vector_add, min_max_2d
 
 walls, portals = None, None
+portal_names = dict()
 begin_time = datetime.datetime.now()
+
+
+def plot_max_w_portals(walls, portals):
+    plot = defaultdict(set)
+    for snode, target in portals.items():
+        tnode, ldelta = target
+        plot['g' if ldelta < 0 else 'r'].add(snode)
+    showgrid.show_grid(walls, highlights=plot, s=12)
 
 
 def get_walls(grid):
@@ -44,18 +53,16 @@ def get_portals(grid):
                 lvl_delta = -1 if cx in [wfx, wtx] or cy in [wfy, wty] else 1
                 if key not in parts:
                     parts[key] = (coords, lvl_delta)
+                    portal_names[coords] = key
                 else:
                     portals[coords] = (parts[key][0], lvl_delta)
+                    portal_names[coords] = key
                     portals[parts[key][0]] = (coords, parts[key][1])
                     del parts[key]
 
                 walls.add((x, y))
 
-    plot = defaultdict(set)
-    for snode, target in portals.items():
-        tnode, ldelta = target
-        plot['g' if ldelta < 0 else 'r'].add(snode)
-    showgrid.show_grid(walls, highlights=plot, s=120)
+    # plot_max_w_portals(walls, portals)
 
     return portals, parts['AA'][0], parts['ZZ'][0]
 
@@ -73,31 +80,32 @@ def adjacents(pos, last_pos=None):
 
 def bfs(root, target):
     q = deque()
-    q.append((root, 0))
+    q.append((root, 0, []))
     visited = set()
     while q:
-        node, steps = q.popleft()
+        node, steps, portal_path = q.popleft()
 
         if node == target:
+            print(portal_path)
             return steps
 
         visited.add(node)
 
         ncoords, level = node
         if ncoords in portals:
-            if (portals[ncoords], level) not in visited:
-                new_coords, lvl_delta = portals[ncoords]
-                new_level = level + lvl_delta
-                q.append(((new_coords, new_level), steps + 1))
+            new_coords, lvl_delta = portals[ncoords]
+            new_level = level + lvl_delta
+            if new_level >= 0 and (new_coords, new_level) not in visited:
+                q.append(((new_coords, new_level), steps + 1, portal_path.copy() + [f'{portal_names[ncoords]}{level}']))
                 # print(f'jumping from {ncoords} ({level}) to {new_coords} ({new_level})')
                 continue
 
         for a in adjacents(ncoords):
             if (a, level) not in visited:
-                q.append(((a, level), steps + 1))
+                q.append(((a, level), steps + 1, portal_path))
 
 
-def get_dead_ends(root):
+def get_dead_ends(root, end_node):
     """find all coordinates of dead ends"""
     q = deque()
     visited = set()
@@ -111,7 +119,6 @@ def get_dead_ends(root):
             if portals[node][0] not in visited:
                 visited.add(portals[node][0])
                 q.append(portals[node][0])
-                print(f'jumping from {node} to {portals[node][0]}')
                 continue
 
         adjs = adjacents(node)
@@ -121,7 +128,7 @@ def get_dead_ends(root):
                 visited.add(a)
                 q.appendleft(a)
 
-        if not proceeded and i == 0:
+        if not proceeded and i == 0 and node != end_node:
             dead_ends.add(node)
 
     return dead_ends
@@ -144,17 +151,13 @@ def simplify_dead_ends(walls, dead_ends):
             d = adjs[0]
 
 
-with open('./test3.txt') as f:
+with open('./input.txt') as f:
     grid = [list(l.rstrip('\n')) for l in f.readlines()]
 
 walls = get_walls(grid)
 portals, start_node, end_node = get_portals(grid)
-simplify_dead_ends(walls, get_dead_ends(start_node))
-plot = defaultdict(set)
-for snode, target in portals.items():
-    tnode, ldelta = target
-    plot['g' if ldelta < 0 else 'r'].add(snode)
-showgrid.show_grid(walls, highlights=plot, s=120)
+simplify_dead_ends(walls, get_dead_ends(start_node, end_node))
+plot_max_w_portals(walls, portals)
 
 print(bfs((start_node, 0), (end_node, 0)))
 print(datetime.datetime.now() - begin_time)
