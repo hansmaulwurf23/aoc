@@ -25,7 +25,8 @@ class InteractiveIntCodeMachine(IntCodeMachine):
         self.in_queue.extend(inputs)
         lencm = len('Command?')
         try:
-            self._run(lambda: self.prog[self.pc] == 99 or not self.in_queue or (len(self.outputs) >= lencm and self.outputs[-1*len('Command?'):] == 'Command?'))
+            # self._run(lambda: self.prog[self.pc] == 99 or not self.in_queue or (len(self.outputs) >= lencm and self.outputs[-1*len('Command?'):] == 'Command?'))
+            self._run(lambda: self.prog[self.pc] == 99 or (len(self.outputs) >= lencm and self.outputs[-1*len('Command?'):] == 'Command?'))
         except NoInputException:
             pass
         if self.prog[self.pc] == 99:
