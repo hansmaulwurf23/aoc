@@ -1,13 +1,13 @@
 import datetime
+import heapq
 import math
 import os
 from collections import namedtuple, defaultdict, deque
-from itertools import product
 
 import imageio as imageio
 
 import showgrid
-from aopython import vector_add
+from aopython import vector_add, min_max_2d
 
 begin_time = datetime.datetime.now()
 
@@ -20,10 +20,15 @@ SHOW_PLT = False
 GIF_DIR = '/tmp/d15/'
 
 
+def init_gif():
+    if not os.path.exists(GIF_DIR):
+        os.mkdir(GIF_DIR)
+
+
 def gif_frame(frame_no):
     if MAKE_GIF or SHOW_PLT:
         plt = showgrid.show_grid(walls, {'r': elves.keys(), 'darkgreen': goblins.keys()}, c='grey',
-                                 s=240, no_show=(not SHOW_PLT))
+                                 s=240, highlightsize=160, no_show=(not SHOW_PLT))
         if not MAKE_GIF:
             return
         plt.savefig(f'{GIF_DIR}{str(frame_no).rjust(4, "0")}.png')
@@ -40,7 +45,94 @@ def save_gif():
                     continue
                 image = imageio.imread(os.path.join(GIF_DIR, f))
                 writer.append_data(image)
-                # os.remove(os.path.join(GIF_DIR, f))
+                os.remove(os.path.join(GIF_DIR, f))
+
+
+def output_raw(round):
+    if round == 0:
+        f = open("./myout.txt", "w")
+    else:
+        f = open("./myout.txt", "a")
+
+    fx, tx, fy, ty = min_max_2d(walls)
+    unit_infos = []
+    for u in elves.keys():
+        heapq.heappush(unit_infos, ((u[1], u[0]), elves[u].HP))
+    for u in goblins.keys():
+        heapq.heappush(unit_infos, ((u[1], u[0]), goblins[u].HP))
+
+    f.write(f'Round: {round}\n\n')
+
+    for y in range(fy, ty + 1):
+        for x in range(fx, tx + 1):
+            c = '.'
+            if (x, y) in walls:
+                c = '#'
+            elif (x, y) in elves:
+                c = 'E'
+            elif (x, y) in goblins:
+                c = 'G'
+            f.write(c)
+        if unit_infos:
+            uinfo = heapq.heappop(unit_infos)
+            f.write(f'   {str(uinfo[0][0]).ljust(2)}   {str(uinfo[0][1]).ljust(2)}   {str(uinfo[1])}\n')
+        else:
+            f.write('\n')
+
+    f.write('\n')
+    f.close()
+
+
+def is_adjacent(a, b):
+    ax, ay = a
+    bx, by = b
+    return (ax == bx and (ay + 1 == by or ay - 1 == by)) or \
+           (ay == by and (ax + 1 == bx or ax - 1 == bx))
+
+
+def adjacents(pos, only_free_space=False):
+    res = []
+    for m in [(0, -1), (-1, 0), (1, 0), (0, 1)]:
+        x, y = tuple(vector_add(pos, m))
+        if only_free_space and ((x, y) in elves or (x, y) in goblins):
+            continue
+        if (x, y) not in walls:
+            res.append((x, y))
+
+    return res
+
+
+def nearest_target(root, targets):
+    q = deque()
+    visited = set()
+    visited.add(root)
+    q.appendleft((root, 0, None))
+    found = []
+    min_distance = math.inf
+    while q:
+        node, steps, first_step = q.pop()
+
+        if node in targets and min_distance >= steps:
+            found.append((node, steps, first_step))
+            min_distance = steps
+            continue
+
+        # cannot be better?
+        if min_distance <= steps:
+            continue
+
+        for a in adjacents(node):
+            if (a in elves or a in goblins) and a not in targets:
+                continue
+            if a not in visited:
+                visited.add(a)
+                q.appendleft((a, steps + 1, first_step if first_step is not None else a))
+
+    if found:
+        target, steps, first_step = min(found, key=lambda f: (f[0][1], f[0][0], f[2][1], f[2][0]))
+        return target, steps, first_step
+    else:
+        return None, None, None
 
 
 def unit_turn(u, allies, targets):
@@ -76,7 +168,7 @@ def unit_turn(u, allies, targets):
 
 
 def combat_round():
-    # all uni coordinates in reading order
+    # all unit coordinates in reading order
     unit_coords = sorted(list(elves.keys()) + list(goblins.keys()), key=lambda t: (t[1], t[0]))
     for u in unit_coords:
         allies, targets = (elves, goblins) if u in elves else (goblins, elves)
@@ -88,70 +180,6 @@ def combat_round():
         unit_turn(u, allies, targets)
 
     return True
-
-
-def step_to(root, target):
-    if root[0] == target[0]:
-        d = (0, 1) if target[1] > root[1] else (0, -1)
-    elif root[1] == target[1]:
-        d = (1, 0) if target[0] > root[0] else (-1, 0)
-    else:
-        # FIXME move vertically or horizontally first?
-        d = (0, 1) if target[1] > root[1] else (0, -1)
-
-    return tuple(vector_add(root, d))
-
-
-def nearest_target(root, targets):
-    q = deque()
-    visited = set()
-    visited.add(root)
-    q.appendleft((root, 0, None))
-    found = []
-    min_distance = math.inf
-    while q:
-        node, steps, first_step = q.pop()
-
-        if node in targets and min_distance >= steps:
-            found.append((node, steps, first_step))
-            min_distance = steps
-            continue
-
-        # cannot be better?
-        if min_distance <= steps:
-            continue
-
-        for a in adjacents(node):
-            if (a in elves or a in goblins) and a not in targets:
-                continue
-            if a not in visited:
-                visited.add(a)
-                q.appendleft((a, steps + 1, first_step if first_step is not None else a))
-
-    if found:
-        target, steps, first_step = min(found, key=lambda f: (f[0][1], f[0][0]))
-        return target, steps, first_step
-    else:
-        return None, None, None
-
-
-def is_adjacent(a, b):
-    ax, ay = a
-    bx, by = b
-    return (ax == bx and (ay + 1 == by or ay - 1 == by)) or \
-           (ay == by and (ax + 1 == bx or ax - 1 == bx))
-
-
-def adjacents(pos, only_free_space=False):
-    res = []
-    for m in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-        x, y = tuple(vector_add(pos, m))
-        if only_free_space and ((x, y) in elves or (x, y) in goblins):
-            continue
-        if (x, y) not in walls:
-            res.append((x, y))
-
-    return res
 
 
 with open('./input.txt') as f:
@@ -168,7 +196,9 @@ with open('./input.txt') as f:
         y += 1
 
 rounds = 0
+init_gif()
 gif_frame(rounds)
+# output_raw(rounds)
 while True:
     last_winner_score = max([sum(map(lambda u: u.HP, team.values())) for team in [elves, goblins]])
     # print(rounds * last_winner_score, rounds)
@@ -178,11 +208,9 @@ while True:
         rounds += 1
     else:
         break
+    # output_raw(rounds)
 
 save_gif()
 winner = elves if elves else goblins
 print(rounds * sum(map(lambda w: w.HP, winner.values())), rounds)
-print('188811 >')
-print('188622 >')
-print('392418 <')
 print(datetime.datetime.now() - begin_time)
