@@ -42,9 +42,9 @@ def plot():
     #                    highlightsize=6, c='gray', s=6, fh=100)
     res = []
 
-    for y in range(lowest_y, ty + 1):
+    for y in range(lowest_y - 3, ty + 3):
         row = []
-        for x in range(fx, tx + 1):
+        for x in range(fx - 2, tx + 1):
             val = 0
             if (x, y) in clay:
                 val = 1
@@ -56,30 +56,39 @@ def plot():
         res.append(row)
 
     do_plot(res, fh=100, cmap=['white', 'darkgrey', 'blue', 'lightblue'],
-                        x=range(fx, tx+1), y=range(lowest_y, ty+1))
+                        x=range(fx - 2, tx+1), y=range(lowest_y - 3, ty+3))
 
 def fill_basin_line(start_pos):
     cur_pos = start_pos
     min_x, max_x = cur_pos[0], cur_pos[0]
     drop_right, drop_left = False, False
-    resting_water.add(cur_pos)
-    wet_tiles.remove(cur_pos)
+    new_wet_tiles = set()
+    new_wet_tiles.add(cur_pos)
+
+    if cur_pos in wet_tiles:
+        wet_tiles.remove(cur_pos)
+
     while(d := neighbor(cur_pos, RIGHT)) not in clay:
-        if neighbor(d, DOWN) not in clay:
+        if neighbor(d, DOWN) not in clay and neighbor(d, DOWN) not in resting_water:
             drop_right = True
             break
         cur_pos = d
         max_x = d[0]
-        resting_water.add(cur_pos)
+        new_wet_tiles.add(cur_pos)
 
     cur_pos = start_pos
     while (d := neighbor(cur_pos, LEFT)) not in clay:
-        if neighbor(d, DOWN) not in clay:
+        if neighbor(d, DOWN) not in clay and neighbor(d, DOWN) not in resting_water:
             drop_left = True
             break
         cur_pos = d
         min_x = d[0]
-        resting_water.add(cur_pos)
+        new_wet_tiles.add(cur_pos)
+
+    if drop_right or drop_left:
+        wet_tiles.update(new_wet_tiles)
+    else:
+        resting_water.update(new_wet_tiles)
 
     return min_x, max_x, drop_left, drop_right
 
@@ -93,58 +102,27 @@ def water_flow(start_pos):
     # flow until we reach clay
     wet_tiles.add(flow_pos)
     while True:
-        if (d := neighbor(flow_pos, DOWN)) not in clay and d not in wet_tiles:
-            flow_pos = d
+        new_pos = neighbor(flow_pos, DOWN)
+        if new_pos[1] < lowest_y:
+            return
+        if new_pos in wet_tiles:
+            return
+        if new_pos not in clay:
+            flow_pos = new_pos
             wet_tiles.add(flow_pos)
             continue
-        if d[1] < lowest_y:
-            return
         break
 
-    # fill basin, first right then left to infer outermost positions
-    rest_pos = flow_pos
-    min_x, max_x = flow_pos[0], flow_pos[0]
-    resting_water.add(rest_pos)
-    while (d := neighbor(rest_pos, RIGHT)) not in clay:
-        if neighbor(d, DOWN) not in clay:
-            return water_flow(d)
-        rest_pos = d
-        max_x = d[0]
-        resting_water.add(rest_pos)
+    min_x, max_x, drop_left, drop_right = fill_basin_line(flow_pos)
+    while not drop_right and not drop_left:
+        flow_pos = neighbor(flow_pos, UP)
+        min_x, max_x, drop_left, drop_right = fill_basin_line(flow_pos)
 
-    rest_pos = flow_pos
-    while (d := neighbor(rest_pos, LEFT)) not in clay:
-        rest_pos = d
-        min_x = d[0]
-        resting_water.add(rest_pos)
+    if drop_right:
+        water_flow(tuple([max_x + 1, flow_pos[1]]))
 
-    contained = True
-    while contained:
-        flow_pos = tuple(neighbor(flow_pos, UP))
-        rest_pos = flow_pos
-        resting_water.add(rest_pos)
-        while rest_pos[0] < max_x:
-            rest_pos = tuple(neighbor(rest_pos, RIGHT))
-            if rest_pos in clay:
-                max_x = rest_pos[0] - 1
-                break
-            resting_water.add(rest_pos)
-        if neighbor(rest_pos, RIGHT) not in clay:
-            contained = False
-            wet_tiles.add(neighbor(rest_pos, RIGHT))
-            water_flow(neighbor(neighbor(rest_pos, RIGHT), RIGHT))
-
-        rest_pos = flow_pos
-        while rest_pos[0] > min_x:
-            rest_pos = tuple(neighbor(rest_pos, LEFT))
-            if rest_pos in clay:
-                min_x = rest_pos[0] + 1
-                break
-            resting_water.add(rest_pos)
-        if neighbor(rest_pos, LEFT) not in clay:
-            contained = False
-            wet_tiles.add(neighbor(rest_pos, LEFT))
-            water_flow(neighbor(neighbor(rest_pos, LEFT), LEFT))
+    if drop_left:
+        water_flow(tuple([min_x - 1, flow_pos[1]]))
 
 
 with open('./input.txt') as f:
@@ -158,5 +136,13 @@ with open('./input.txt') as f:
 fx, tx, lowest_y, ty = min_max_2d(clay)
 # showgrid.show_grid(clay, s=6, fh=100)
 water_flow((500, 0))
+
+# remove dropping into sand fields after water_flow(..) is done to keep code clean
+for y in range(0, max(clay, key=lambda x:x[1])[1], -1):
+    if (500, y) in wet_tiles:
+        wet_tiles.remove((500, y))
+
+wet_tiles -= resting_water
 plot()
+print(len(wet_tiles | resting_water))
 print(datetime.datetime.now() - begin_time)
