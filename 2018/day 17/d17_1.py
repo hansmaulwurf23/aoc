@@ -3,8 +3,6 @@ import re
 
 from matplotlib import pyplot as plt, ticker
 from matplotlib.colors import ListedColormap
-
-import showgrid
 from aopython import vector_add, min_max_2d
 
 begin_time = datetime.datetime.now()
@@ -38,8 +36,6 @@ def do_plot(points, cmap=None, fh=10, fw=10, x=None, y=None):
 
 
 def plot():
-    # showgrid.show_grid(clay, highlights={'lightgreen': wet_tiles, 'lightblue': resting_water},
-    #                    highlightsize=6, c='gray', s=6, fh=100)
     res = []
 
     for y in range(lowest_y - 3, ty + 3):
@@ -58,6 +54,7 @@ def plot():
     do_plot(res, fh=100, cmap=['white', 'darkgrey', 'blue', 'lightblue'],
                         x=range(fx - 2, tx+1), y=range(lowest_y - 3, ty+3))
 
+
 def fill_basin_line(start_pos):
     cur_pos = start_pos
     min_x, max_x = cur_pos[0], cur_pos[0]
@@ -68,7 +65,7 @@ def fill_basin_line(start_pos):
     if cur_pos in wet_tiles:
         wet_tiles.remove(cur_pos)
 
-    while(d := neighbor(cur_pos, RIGHT)) not in clay:
+    while (d := neighbor(cur_pos, RIGHT)) not in clay:
         if neighbor(d, DOWN) not in clay and neighbor(d, DOWN) not in resting_water:
             drop_right = True
             break
@@ -98,7 +95,6 @@ def water_flow(start_pos):
         return
 
     flow_pos = start_pos
-    # plot()
     # flow until we reach clay
     wet_tiles.add(flow_pos)
     while True:
@@ -134,7 +130,6 @@ with open('./input.txt') as f:
             clay |= {(x, -fix) for x in range(low, high+1)}
 
 fx, tx, lowest_y, ty = min_max_2d(clay)
-# showgrid.show_grid(clay, s=6, fh=100)
 water_flow((500, 0))
 
 # remove dropping into sand fields after water_flow(..) is done to keep code clean
