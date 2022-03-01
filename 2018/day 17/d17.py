@@ -137,7 +137,7 @@ for y in range(0, max(clay, key=lambda x:x[1])[1], -1):
     if (500, y) in wet_tiles:
         wet_tiles.remove((500, y))
 
-wet_tiles -= resting_water
-plot()
+# plot()
 print(len(wet_tiles | resting_water))
+print(len(resting_water))
 print(datetime.datetime.now() - begin_time)
