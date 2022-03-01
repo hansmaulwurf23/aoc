@@ -29,7 +29,7 @@ def bfs_max(rooms, root):
 
 
 def build_rooms(input, cur_pos):
-    # print(len(input))
+    # print(len(rooms))
     while input:
         nxt = input.popleft()
         if nxt in dirs:
@@ -58,9 +58,14 @@ def build_rooms(input, cur_pos):
                     parts[-1].append(nxt)
 
             # print(f"found this parts: {parts}")
-            for p in parts:
-                build_rooms(deque(p + list(input)), tuple(cur_pos))
-
+            if list(filter(lambda l: len(l) == 0, parts)):
+                for p in parts:
+                    if len(p):
+                        build_rooms(deque(p), tuple(cur_pos))
+            else:
+                for p in parts:
+                    build_rooms(deque(p + list(input)), tuple(cur_pos))
+                return
 
 with open('./input.txt') as f:
     build_rooms(deque(f.readlines()[0].rstrip()[1:-1]), (0, 0))
