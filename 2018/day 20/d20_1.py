@@ -29,7 +29,7 @@ def bfs_max(rooms, root):
 
 
 def build_rooms(input, cur_pos):
-    print(len(input))
+    # print(len(input))
     while input:
         nxt = input.popleft()
         if nxt in dirs:
