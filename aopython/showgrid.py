@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 
 
 def scatter(points, *, marker='s', c='#1f77b4', s=160):
@@ -7,9 +8,10 @@ def scatter(points, *, marker='s', c='#1f77b4', s=160):
     plt.scatter(x, y, s=s, c=c, marker=marker)
 
 
-def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=True, highlightsize=15, no_show=False):
+def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=True, highlightsize=15, no_show=False,
+              fh=10, fw=10):
     fig, ax = plt.subplots()
-    fig.set(figwidth=10, figheight=10, dpi=100)
+    fig.set(figwidth=fw, figheight=fh, dpi=100)
 
     if minTicks:
         ax.minorticks_on()
@@ -39,10 +41,15 @@ def show_heatmap(points, highlights=None, marker='s', s=160):
     show_grid(points, highlights=highlights, marker=marker, c=colors, s=s)
 
 
-def pcolormesh(points):
+def pcolormesh(points, cmap=None, fh=10, fw=10, x=None, y=None):
     fig, ax = plt.subplots()
-    fig.set(figwidth=10, figheight=10, dpi=100)
-    plt.pcolormesh(points)
+    fig.set(figwidth=fw, figheight=fh, dpi=100)
+    if cmap is not None:
+        cmap = ListedColormap(cmap)
+    if x and y:
+        plt.pcolormesh(x, y, points, cmap=cmap)
+    else:
+        plt.pcolormesh(points, cmap=cmap)
     plt.show()
 
 
