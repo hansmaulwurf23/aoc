@@ -1,0 +1,38 @@
+#ip 5
+ 0  seti 123 0 1             r1 = 123
+ 1  bani 1 456 1             r1 = r1 & 456 (= 72)
+ 2  eqri 1 72 1              r1 = 1 if r1 == 72 else 0 (r1 = 1!)
+ 3  addr 1 5 5               r5 = r5 + 1  JUMP next instr
+ 4  seti 0 0 5               r5 = 0       JUMP ENDLESS
+
+ 5  seti 0 0 1               r1 = 0
+
+JUMP TARGET FROM 30
+ 6  bori 1 65536 2           r2 = r1 | 65536
+ 7  seti 6663054 1 1         r1 = 6663054
+JUMP TARGET FROM 27
+ 8  bani 2 255 4             r4 = r2 & 255 (bei 65536 => 0)  aka % 8
+ 9  addr 1 4 1               r1 = r1 + r4
+10  bani 1 16777215 1        r1 = r1 & 16777215 (=> 6663054)  aka % (2^24)
+11  muli 1 65899 1           r1 = r1 * 65899 (=> 439088595546)
+12  bani 1 16777215 1        r1 = r1 & ... (=> 12075610)
+13  gtir 256 2 4             r4 = 1 if 256 > r2 else 0 (=> 0)
+14  addr 4 5 5               r5 = r4 + r5   JUMP -> 16 if r4 == 1
+15  addi 5 1 5               r5 = r5 + 1    JUMP next instr
+16  seti 27 6 5              r5 = 27        JUMP -> 28
+17  seti 0 6 4               r4 = 0
+LOOP_r3
+18  addi 4 1 3               r3 = r4 + 1
+19  muli 3 256 3             r3 = r3 * 256
+20  gtrr 3 2 3               r3 = 1 if r3 > r2 else 0
+21  addr 3 5 5               r5 = r3 + r5   JUMP next instr if r3!
+22  addi 5 1 5               r5 = r5 + 1    JUMP next instr
+23  seti 25 9 5              r5 = 25        JUMP -> 26
+24  addi 4 1 4               r4 = r4 + 1
+25  seti 17 3 5              r5 = 17        JUMP -> 18
+END_LOOP_r3
+26  setr 4 4 2               r2 = r4
+27  seti 7 2 5               r5 = 7         JUMP -> 8
+28  eqrr 1 0 4               r4 = 1 if r1 == r0 else 0
+29  addr 4 5 5               r5 = r4 + r5   JUMP END if r4 == 1
+30  seti 5 8 5               r5 = 5         JUMP -> 6
