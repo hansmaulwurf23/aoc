@@ -6,7 +6,8 @@ begin_time = datetime.datetime.now()
 ADDR, ADDI, MULR, MULI, BANR, BANI, BORR, BORI, SETR, SETI, GTIR, GTRI, GTRR, EQIR, EQRI, EQRR = range(16)
 op_codes = {'addr': 0, 'addi': 1, 'mulr': 2, 'muli': 3, 'banr': 4, 'bani': 5, 'borr': 6, 'bori': 7, 'setr': 8,
             'seti': 9, 'gtir': 10, 'gtri': 11, 'gtrr': 12, 'eqir': 13, 'eqri': 14, 'eqrr': 15}
-op_names = {v:k for k, v in op_codes.items()}
+op_names = {v: k for k, v in op_codes.items()}
+
 
 def read_program(lines):
     instr = []
@@ -73,37 +74,32 @@ ip_reg = int(re.findall(r'\d+', lines[0])[0])
 script = read_program(lines[1:])
 # print(run_program(script, ip_reg, 10332277))
 
-r1 = 0
-results = []
-last_res = None
+seen = set()
+solutions = set()
 res = None
-while not res:
-    r2 = r1 | 65536
-    r1 = 6663054
-    while True:
-        # line 8
-        r4 = r2 % 8
-        # lines 9 to 12
-        r1 = (((r1 + r4) % (2**24)) * 65899) % (2**24)
-        if r2 < 256:
-            if r1 not in results:
-                results.append(r1)
-                print(r1)
-                last_res = r1
-            # else:
-            #     res = last_res
-            #     print(r1)
+
+r1 = 6663054
+r2 = 65536
+while True:
+    # line 8
+    r4 = r2 % 256
+    # lines 9 to 12
+    r1 = ((r1 + r4) % (2**24) * 65899) % (2**24)
+    if r2 < 256:
+        if r1 not in solutions:
+            res = r1
+        solutions.add(r1)
+        r2 = r1 | (2 ** 16)
+        if r2 in seen:
+            print(res)
             break
-        # LOOP_r3
-        r2 = r2 // 256
+        seen.add(r2)
+        r1 = 6663054
+        continue
+    # LOOP_r3
+    r2 = r2 // 256
 
-
-# for r in results:
-#     print(run_program(script, ip_reg, r))
-
-print(res)
 print('5991481 too low')
 print('16048858 too high')
 print('11703582 wrong')
-print(list(results))
 print(datetime.datetime.now() - begin_time)
