@@ -26,40 +26,37 @@ def dijkstra(grid, start, target):
     best = dict()
     while pq:
         cur_mins, cur_pos, cur_equip = heapq.heappop(pq)
+
+        if (cur_pos, cur_equip) in best and best[(cur_pos, cur_equip)] <= cur_mins:
+            continue
+        best[(cur_pos, cur_equip)] = cur_mins
+
         cx, cy = cur_pos
         cur_type = grid[cy][cx][RISK]
         alt_equip = (equipment[cur_type] - {cur_equip}).pop()
 
-        if (cur_pos, cur_equip) in best and best[(cur_pos, cur_equip)] < cur_mins:
-            continue
-        best[(cur_pos, cur_equip)] = cur_mins
-
         # just in case change equipment
         heapq.heappush(pq, (cur_mins + 7, cur_pos, alt_equip))
 
-        if cur_pos == target:
-            print(cur_mins + (7 if cur_equip != TORCH else 0))
+        if (cur_pos, cur_equip) == (target, TORCH):
+            print(cur_mins)
             break
 
         for new_pos in adjacents(cur_pos):
             nx, ny = new_pos
             new_equip, new_type = cur_equip, grid[ny][nx][RISK]
-            if cur_equip == new_type:
+            if cur_equip in equipment[new_type]:
                 heapq.heappush(pq, (cur_mins + 1, new_pos, cur_equip))
 
 
 def adjacents(pos):
     res = []
-    for d in [(1, 0), (0, 1), (-1, 0), (0, 1)]:
-        a = tuple(vector_add(pos, d))
-        if in_grid(*a):
-            res.append(a)
+    for dx, dy in [(1, 0), (0, 1), (-1, 0), (0, 1)]:
+        ax, ay = pos[0] + dx, pos[1] + dy
+        if 0 <= ax and 0 <= ay:
+            res.append((ax, ay))
 
     return res
-
-
-def in_grid(x, y):
-    return 0 <= x and 0 <= y
 
 
 def build_map(topleft, bottomright):
@@ -82,11 +79,8 @@ def build_map(topleft, bottomright):
             risk = ero % 3
             grid[-1].append((ero, geo, risk))
 
+    print(f'finished building grid after {datetime.datetime.now() - begin_time}')
     return grid
-
-
-def risk_level(grid):
-    return sum([sum([v[RISK] for v in row]) for row in grid])
 
 
 with open('./input.txt') as f:
