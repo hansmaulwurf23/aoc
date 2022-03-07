@@ -7,7 +7,6 @@ UNITS, HP, DAMAGE, DAMAGE_TYPE, IMMUNE, WEAK, INITIATIVE, ARMY = range(8)
 IMUSYS, INFECT = range(2)
 opponent_army = {IMUSYS: INFECT, INFECT: IMUSYS}
 army_names = ['Immune System', 'Infection']
-DEBUG = True
 
 
 def effective_power(group):
@@ -24,71 +23,61 @@ def calc_damage(attacking, defending):
     return effective_power(attacking) * factor
 
 
-def dump_armies(armies):
-    print(f'{"="*80}')
-    for army_idx, name in enumerate(army_names):
-        print(f'{name}:')
-        print('\n'.join(map(lambda g: f'Group {g[0]+1} contains {g[1][UNITS]} units', enumerate(armies[army_idx]))))
-    print('\n')
-
-
-def dump_fight(fight, armies):
-    (my_army, my_idx), (other_army, other_idx) = fight
-    group = armies[my_army][my_idx]
-    opp = armies[other_army][other_idx]
-    print(f'{army_names[my_army]} group {my_idx+1} would deal {army_names[other_army]} {other_idx+1} {calc_damage(group, opp)}')
-
-
-def dump_attack(fight, killed):
-    (my_army, my_idx), (other_army, other_idx) = fight
-    print(f'{army_names[my_army]} group {my_idx+1} attacks {army_names[other_army]} {other_idx+1}, killing {killed} units')
-
-
 def fight(armies):
     # target selection phase
     possible_ops = []
     for army_idx in range(len(armies)):
-        possible_ops.append([])
-        for group in armies[army_idx]:
-            if group[UNITS]:
-                possible_ops[-1].append(group.copy())
+        possible_ops.append([g for g in armies[army_idx] if g[UNITS] > 0])
 
-    if DEBUG: dump_armies(possible_ops)
     fights = []
     for group in sorted(armies[0] + armies[1], key=lambda g: (effective_power(g), g[INITIATIVE]), reverse=True):
-        # print((effective_power(group), group[INITIATIVE]))
         my_army = group[ARMY]
         other_army = opponent_army[my_army]
         if len(possible_ops[other_army]) == 0:
             continue
         opponent = max(possible_ops[other_army], key=lambda o: (calc_damage(group, o), effective_power(o), o[INITIATIVE]))
-        if calc_damage(group, opponent):
+        if calc_damage(group, opponent) > 0:
             fights.append(((my_army, armies[my_army].index(group)), (other_army, armies[other_army].index(opponent))))
-            if DEBUG: dump_fight(fights[-1], armies)
             possible_ops[other_army].remove(opponent)
 
-    if DEBUG: print('\n')
-
     # attacking phase
+    dealt_damage = False
     for (my_army, my_idx), (other_army, other_idx) in sorted(fights, key=lambda pair: armies[pair[0][0]][pair[0][1]][INITIATIVE], reverse=True):
         group = armies[my_army][my_idx]
         opponent = armies[other_army][other_idx]
-        if group[UNITS] == 0:
-            continue
+        # print(f'{group[UNITS]} -> {opponent[UNITS]}')
 
-        killed_units = calc_damage(group, opponent) // opponent[HP]
-        if DEBUG: dump_attack(((my_army, my_idx), (other_army, other_idx)), killed_units)
-        opponent[UNITS] = max([0, opponent[UNITS] - killed_units])
+        damage = calc_damage(group, opponent)
+        killed_units = min(opponent[UNITS], damage // opponent[HP])
+        if killed_units > 0:
+            dealt_damage = True
+        opponent[UNITS] = opponent[UNITS] - killed_units
+
+    return dealt_damage
+
+
+def battle(boost):
+    print(f'battle with boost {boost}')
+    boost_armies = copy.deepcopy(org_armies)
+    for g in boost_armies[IMUSYS]:
+        g[DAMAGE] += boost
+    while all(scores := [sum([g[UNITS] for g in army]) for army in boost_armies]):
+        dealt_damage = fight(boost_armies)
+        # print(scores)
+        if not dealt_damage:
+            return scores
+
+    return scores
 
 
 with open('./input.txt') as f:
     lines = f.readlines()
-    armies = []
+    org_armies = []
     cur_type = 0
 
     for line in lines:
         if line.find(':') > 0:
-            armies.append([])
+            org_armies.append([])
             continue
         if not line.rstrip():
             cur_type += 1
@@ -105,12 +94,16 @@ with open('./input.txt') as f:
                 elif s.startswith("immune to "):
                     immune = s[len("immune to "):].split(", ")
         u = [int(units), int(hp), int(damage), damage_type, set(immune), set(weak), int(initiative), cur_type]
-        armies[-1].append(u)
+        org_armies[-1].append(u)
 
-while all([sum([g[UNITS] for g in army]) for army in armies]):
-    fight(armies)
 
-dump_armies(armies)
-print(max([sum([g[UNITS] for g in army]) for army in armies]))
-print('19555 too low')
+boost = 1
+while True:
+    scores = battle(boost)
+    if scores[IMUSYS] > 0 and scores[INFECT] == 0:
+        print(scores[IMUSYS])
+        break
+    else:
+        boost += 1
+
 print(datetime.datetime.now() - begin_time)
