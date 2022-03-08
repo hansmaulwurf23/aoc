@@ -21,16 +21,6 @@ print(f'calculated {len(distances)} ({sum([len(s) for s in distances.values()])}
 constellations = set()
 for p, others in distances.items():
     cur_const = {p} | {o for o in others.keys() if others[o] <= 3}
-    # merged = False
-    # for c in constellations:
-    #     if c & cur_const:
-    #         newc = c | cur_const
-    #         constellations.remove(c)
-    #         constellations.add(newc)
-    #         merged = True
-    #         break
-    #
-    # if not merged:
     constellations.add(frozenset(cur_const))
 
 
