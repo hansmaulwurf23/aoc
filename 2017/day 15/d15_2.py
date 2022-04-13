@@ -7,6 +7,7 @@ factors = (16807, 48271)
 mods = (4, 8)
 mask = 2**16 - 1
 # rounds = 5
+# gen_vals = [65, 8921]
 rounds = 5000000
 
 with open('./input.txt') as f:
@@ -14,7 +15,6 @@ with open('./input.txt') as f:
     while line := f.readline().rstrip():
         gen_vals.append(int(re.findall(r'-?\d+', line)[0]))
 
-# gen_vals = [65, 8921]
 matches = 0
 for r in range(rounds):
     for i, v in enumerate(gen_vals):
@@ -25,8 +25,6 @@ for r in range(rounds):
 
     if gen_vals[0] & mask == gen_vals[1] & mask:
         matches += 1
-
-    # print(gen_vals)
 
 print(matches)
 print(631)
