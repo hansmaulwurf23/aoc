@@ -17,6 +17,7 @@ reg_banks[1]['p'] = 1
 pc = pcs[prog_id]
 regs = reg_banks[prog_id]
 send_count = 0
+send_histo = defaultdict(lambda: 0)
 
 while 0 <= pc < len(prog):
     instr = prog[pc]
@@ -28,7 +29,11 @@ while 0 <= pc < len(prog):
         y = int(instr[2]) if re.match(r'-?\d+', instr[2]) else regs[instr[2]]
 
     if op == 'snd':
+        send_histo[regs[x]] += 1
+        if send_histo[regs[x]] == 1:
+            print(f'sending {regs[x]} to {(prog_id + 1) % 2} ({dict(send_histo)})')
         msg_qs[(prog_id + 1) % 2].append(regs[x])
+        # print(f'sending {regs[x]} to {(prog_id + 1) % 2}')
         if prog_id == 1:
             send_count += 1
         pc += 1
