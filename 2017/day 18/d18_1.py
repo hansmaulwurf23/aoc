@@ -44,7 +44,7 @@ while 0 <= pc < len(prog):
             break
         pc += 1
     elif op == 'jgz':
-        if regs[x] > 0:
+        if (type(x) == int and x > 0) or regs[x] > 0:
             pc += y
         else:
             pc += 1
