@@ -59,3 +59,12 @@ def plot_xy(data):
     plt.plot(x, y)
     plt.show()
 
+
+def hex_grid(data, fh=10, fw=10):
+    fig, ax = plt.subplots()
+    fig.set(figwidth=fw, figheight=fh, dpi=100)
+    x = list(map(lambda x: x[0], data))
+    y = list(map(lambda x: x[1], data))
+    plt.hexbin(x, y)
+    plt.show()
+
