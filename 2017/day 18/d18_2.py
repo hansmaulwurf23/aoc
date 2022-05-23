@@ -63,7 +63,7 @@ while 0 <= pc < len(prog):
             if prog[pc][0] == 'rcv' and len(msg_qs[prog_id]) == 0:
                 break
     elif op == 'jgz':
-        if regs[x] > 0:
+        if (type(x) == int and x > 0) or regs[x] > 0:
             pc += y
         else:
             pc += 1
