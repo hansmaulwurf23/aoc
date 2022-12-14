@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
@@ -9,12 +10,15 @@ def scatter(points, *, marker='s', c='#1f77b4', s=160):
 
 
 def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=True, highlightsize=15, no_show=False,
-              fh=10, fw=10):
+              fh=10, fw=10, invert_yaxis=False):
     fig, ax = plt.subplots()
     fig.set(figwidth=fw, figheight=fh, dpi=100)
 
     if minTicks:
         ax.minorticks_on()
+
+    if invert_yaxis:
+        matplotlib.axes.Axes.invert_yaxis(ax)
 
     scatter(points, marker=marker, s=s, c=c)
 
