@@ -31,6 +31,10 @@ def manhattan_distance(source, target=None):
     return sum([abs(s - t) for s, t in zip(source, target)])
 
 
+def range_in_range(a, b):
+    return a.start in b and a.stop - 1 in b
+
+
 def vector_add(a, b):
     """
     Adds two vectors
