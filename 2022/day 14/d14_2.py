@@ -52,5 +52,6 @@ while True:
     if not run_sand():
         break
 
+showgrid.show_grid(rocks, highlights=sand, invert_yaxis=True)
 print(len(sand))
 print(datetime.datetime.now() - begin_time)
