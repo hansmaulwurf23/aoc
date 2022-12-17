@@ -1,7 +1,7 @@
 import datetime
 
 import showgrid
-from aopython import vector_add
+from aopython import vector_add, bool_list_to_int
 
 begin_time = datetime.datetime.now()
 
@@ -41,8 +41,10 @@ def has_collision(rock, block_pos, direction):
     return False
 
 
-def fall_into_place(rock, top):
+def fall_into_place(r):
     global tower, cur_gas_mvmt
+    top = len(tower) if tower else 0
+    rock = ROCK_TYPES[r % len(ROCK_TYPES)]
     block_pos = (2, top + 3)
 
     move, direction = 0, 0
@@ -61,11 +63,13 @@ def fall_into_place(rock, top):
                 pass
             else:
                 # collision with rock, stop falling and rest
+                new_lines = 0
                 for ex, ey in map(lambda e: tuple(vector_add(e, block_pos)), ROCK[rock]):
                     while len(tower) <= ey:
+                        new_lines += 1
                         tower.append([False] * 7)
                     tower[ey][ex] = True
-                return
+                return new_lines
         else:
             block_pos = tuple(vector_add(block_pos, delta))
 
@@ -76,15 +80,36 @@ def fall_into_place(rock, top):
 with open('./input.txt') as f:
     gas_mvmt.extend(map(lambda x: LEFT if x == '<' else RIGHT, f.readline().rstrip()))
 
-for r in range(1000000000000):
-    if r % 10000 == 0:
-        print(f'{r / 1000000000000 * 100} %')
-    top = len(tower) if tower else 0
-    # print(f'new height {top}')
-    fall_into_place(ROCK_TYPES[r % len(ROCK_TYPES)], top)
-    # showgrid.show_grid(tower)
+runs = 1000000000000
+detection_range = 4  # started this with 12 lines converted to ints lol
+seen = {}
+period, periodic_growth = None, None
 
-top = len(tower) if tower else 0
-print(f'height {top}')
-print('       3141')
+for r in range(runs):
+    rock_type = r % len(ROCK_TYPES)
+    fall_into_place(r)
+
+    pattern = [rock_type, cur_gas_mvmt]
+    for line in tower[-detection_range:]:
+        pattern.append(bool_list_to_int(line))
+    pattern = tuple(pattern)
+    if pattern in seen:
+        seen_r, seen_height = seen[pattern]
+        period = r - seen_r
+        periodic_growth = len(tower) - seen_height
+        break
+    else:
+        seen[pattern] = (r, len(tower))
+
+height = len(tower)
+num_repeats = (runs - r) // period
+r += period * num_repeats + 1
+height += periodic_growth * num_repeats
+
+while r < runs:
+    height += fall_into_place(r)
+    r += 1
+
+print(f'{height}')
+print(1561739130391)
 print(datetime.datetime.now() - begin_time)

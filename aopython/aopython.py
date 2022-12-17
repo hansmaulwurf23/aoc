@@ -103,6 +103,10 @@ def last_digit(n):
         return n % 10
 
 
+def bool_list_to_int(l):
+    return sum(v << i for i, v in enumerate(reversed(l)))
+
+
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
