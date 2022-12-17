@@ -23,14 +23,14 @@ stack_height = 0
 tower = set()
 
 
-def has_collision(rock, block_pos, delta):
-    new_pos = tuple(vector_add(block_pos, delta))
+def has_collision(rock, block_pos, direction):
+    new_pos = tuple(vector_add(block_pos, direction))
     rock_elems = list(map(lambda e: tuple(vector_add(e, new_pos)), ROCK[rock]))
-    if not all(map(lambda e: 0 <= e[0] < 7, rock_elems)):
+    if direction != DOWN and not all(map(lambda e: 0 <= e[0] < 7, rock_elems)):
         # print('collision on left or right wall')
         return True
 
-    if not all(map(lambda e: e[1] >= 0, rock_elems)):
+    if direction == DOWN and not all(map(lambda e: e[1] >= 0, rock_elems)):
         # print('collision on ground')
         return True
 
