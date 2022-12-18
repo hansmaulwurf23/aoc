@@ -1,5 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.colors import ListedColormap
 
 
@@ -72,3 +73,22 @@ def hex_grid(data, fh=10, fw=10):
     plt.hexbin(x, y)
     plt.show()
 
+
+def voxels(data, fh=10, fw=10):
+    range_x = range(min(map(lambda e: e[0], data)), max(map(lambda e: e[0], data)))
+    range_y = range(min(map(lambda e: e[1], data)), max(map(lambda e: e[1], data)))
+    range_z = range(min(map(lambda e: e[2], data)), max(map(lambda e: e[2], data)))
+    grid = np.zeros(shape=(len(range_x)+1, len(range_y)+1, len(range_z)+1), dtype=int)
+
+    for d in data:
+        grid.itemset(d, True)
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+    fig.set(figwidth=fw, figheight=fh, dpi=100)
+    ax.voxels(grid, edgecolor='k', facecolors='#7A88CCC0', )
+
+    # ax.set(xticklabels=[],
+    #        yticklabels=[],
+    #        zticklabels=[])
+
+    plt.show()

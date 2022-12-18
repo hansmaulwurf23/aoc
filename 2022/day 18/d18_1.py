@@ -1,5 +1,6 @@
 import datetime
 
+import showgrid
 from aopython import vector_add
 
 begin_time = datetime.datetime.now()
@@ -19,5 +20,6 @@ sides = 0
 for p in points:
     sides += sum(map(lambda a: 0 if a in points else 1, adjacents(p)))
 
+showgrid.voxels(points)
 print(sides)
 print(datetime.datetime.now() - begin_time)
