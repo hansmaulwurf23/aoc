@@ -15,7 +15,7 @@ cache = dict()
 cache_hit = 0
 cache_miss = 0
 
-def calc_build_possibilities(bp, resources, robots, max_cost):
+def calc_build_possibilities(bp, resources, robots, time_left, max_cost):
     possibles = []
     cst = bp[COST]
 
@@ -23,13 +23,15 @@ def calc_build_possibilities(bp, resources, robots, max_cost):
         return [GEODE]
 
     if cst[OBSIDIAN][CLAY] <= resources[CLAY] and cst[OBSIDIAN][ORE] <= resources[ORE] and \
-            max_cost[OBSIDIAN] > robots[OBSIDIAN]:
+            robots[OBSIDIAN] * time_left + resources[OBSIDIAN] < time_left * max_cost[OBSIDIAN]:
         possibles.append(OBSIDIAN)
 
-    if cst[CLAY][ORE] <= resources[ORE] and robots[CLAY] < max_cost[CLAY]:
+    if cst[CLAY][ORE] <= resources[ORE] and robots[CLAY] < max_cost[CLAY] and \
+            robots[CLAY] * time_left + resources[CLAY] < time_left * max_cost[CLAY]:
         possibles.append(CLAY)
 
-    if cst[ORE][ORE] <= resources[ORE]:
+    if cst[ORE][ORE] <= resources[ORE] and \
+            robots[ORE] * time_left + resources[ORE] < time_left * max_cost[ORE]:
         possibles.append(ORE)
 
     #if not possibles or (possibles[0] != OBSIDIAN and len(possibles) <= 2):
@@ -72,7 +74,7 @@ def run_plan(bp, robots, build_robot, resources, time_left, max_cost):
 
 
 def simulate_blueprint(bp, robots, resources, time_left, max_cost):
-    possibilities = calc_build_possibilities(bp, resources, robots, max_cost)
+    possibilities = calc_build_possibilities(bp, resources, robots, time_left, max_cost)
     # if time_left == 10:
     #     print(f'cache hits {cache_hit} miss {cache_miss} ({round(cache_hit / cache_miss * 100, 2)})')
     return max(map(lambda p: run_plan(bp, robots.copy(), p, resources.copy(), time_left, max_cost), possibilities))
@@ -110,8 +112,9 @@ for i, bp in enumerate(blueprints):
     print(f'running bp {i + 1} for {RUNTIME} minutes @ {datetime.datetime.now()} ')
     qualis.append(calc_blueprint_quality(bp))
     print(f'max {qualis[-1]}')
-#
+
 print(sum([((i + 1) * v) for i, v in enumerate(qualis)]))
 print(qualis)
 print('1023')
 print(datetime.datetime.now() - begin_time)
+print('0:00:10.018233 (before optimization)')
