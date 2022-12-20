@@ -1,8 +1,5 @@
 import datetime
 import re
-import itertools
-from collections import defaultdict
-import functools
 
 begin_time = datetime.datetime.now()
 ORE, CLAY, OBSIDIAN, GEODE = range(4)
@@ -34,7 +31,6 @@ def calc_build_possibilities(bp, resources, robots, time_left, max_cost):
             robots[ORE] * time_left + resources[ORE] < time_left * max_cost[ORE]:
         possibles.append(ORE)
 
-    #if not possibles or (possibles[0] != OBSIDIAN and len(possibles) <= 2):
     possibles.append(None)
 
     return possibles
@@ -49,7 +45,6 @@ def run_plan(bp, robots, build_robot, resources, time_left, max_cost):
     else:
         cache_miss += 1
 
-    # print(f'\n== Minute {RUNTIME - time_left + 1} {build_plan[0]} {resources} ==')
     if build_robot is not None:
         for res_type, res_count in bp[COST][build_robot].items():
             resources[res_type] -= res_count
@@ -75,8 +70,6 @@ def run_plan(bp, robots, build_robot, resources, time_left, max_cost):
 
 def simulate_blueprint(bp, robots, resources, time_left, max_cost):
     possibilities = calc_build_possibilities(bp, resources, robots, time_left, max_cost)
-    #if time_left == 20:
-    #    print(f'cache hits {cache_hit} miss {cache_miss} ({round(cache_hit / cache_miss * 100, 2)})')
     return max(map(lambda p: run_plan(bp, robots.copy(), p, resources.copy(), time_left, max_cost), possibilities))
 
 

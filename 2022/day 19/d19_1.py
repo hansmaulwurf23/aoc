@@ -1,8 +1,5 @@
 import datetime
 import re
-import itertools
-from collections import defaultdict
-import functools
 
 begin_time = datetime.datetime.now()
 ORE, CLAY, OBSIDIAN, GEODE = range(4)
@@ -14,6 +11,7 @@ cur_best = 0
 cache = dict()
 cache_hit = 0
 cache_miss = 0
+
 
 def calc_build_possibilities(bp, resources, robots, time_left, max_cost):
     possibles = []
@@ -34,7 +32,6 @@ def calc_build_possibilities(bp, resources, robots, time_left, max_cost):
             robots[ORE] * time_left + resources[ORE] < time_left * max_cost[ORE]:
         possibles.append(ORE)
 
-    #if not possibles or (possibles[0] != OBSIDIAN and len(possibles) <= 2):
     possibles.append(None)
 
     return possibles
@@ -49,7 +46,6 @@ def run_plan(bp, robots, build_robot, resources, time_left, max_cost):
     else:
         cache_miss += 1
 
-    # print(f'\n== Minute {RUNTIME - time_left + 1} {build_plan[0]} {resources} ==')
     if build_robot is not None:
         for res_type, res_count in bp[COST][build_robot].items():
             resources[res_type] -= res_count
@@ -60,7 +56,7 @@ def run_plan(bp, robots, build_robot, resources, time_left, max_cost):
 
     time_left -= 1
     if cur_best is not None and resources[GEODE] + robots[GEODE] * time_left + MAX_GEO[time_left] <= cur_best:
-       return 0
+        return 0
 
     if time_left:
         v = simulate_blueprint(bp, robots, resources, time_left, max_cost)
@@ -75,8 +71,6 @@ def run_plan(bp, robots, build_robot, resources, time_left, max_cost):
 
 def simulate_blueprint(bp, robots, resources, time_left, max_cost):
     possibilities = calc_build_possibilities(bp, resources, robots, time_left, max_cost)
-    # if time_left == 10:
-    #     print(f'cache hits {cache_hit} miss {cache_miss} ({round(cache_hit / cache_miss * 100, 2)})')
     return max(map(lambda p: run_plan(bp, robots.copy(), p, resources.copy(), time_left, max_cost), possibilities))
 
 
@@ -102,7 +96,6 @@ with open('./input.txt') as f:
             GEODE: {ORE: vals[5], OBSIDIAN: vals[6]}
         }))
 
-
 # print(calc_blueprint_quality(blueprints[8]), 3)
 # print(calc_blueprint_quality(blueprints[13]), 6)
 # print(calc_blueprint_quality(blueprints[22]), 4)
@@ -117,4 +110,3 @@ print(sum([((i + 1) * v) for i, v in enumerate(qualis)]))
 print(qualis)
 print('1023')
 print(datetime.datetime.now() - begin_time)
-print('0:00:10.018233 (before optimization)')
