@@ -11,7 +11,7 @@ def scatter(points, *, marker='s', c='#1f77b4', s=160):
 
 
 def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=True, highlightsize=15, no_show=False,
-              fh=10, fw=10, invert_yaxis=False):
+              fh=10, fw=10, invert_yaxis=False, xrange=None, yrange=None, title=None):
     fig, ax = plt.subplots()
     fig.set(figwidth=fw, figheight=fh, dpi=100)
 
@@ -36,6 +36,15 @@ def show_grid(points, highlights=None, marker='s', c='#1f77b4', s=160, minTicks=
 
     plt.grid(True)
     plt.grid(True, which='minor')
+
+    if xrange is not None:
+        plt.xlim(xrange)
+    if yrange is not None:
+        plt.ylim(yrange)
+
+    if title is not None:
+        plt.title(title)
+
     if not no_show:
         plt.show()
     return plt
