@@ -54,18 +54,22 @@ with open('./input.txt') as f:
 
 minute = 0
 cur_pos = tuple(start)
-states = {(cur_pos, (cur_pos,))}
+# states = {(cur_pos, (cur_pos,))}
+states = {cur_pos}
 while True:
     storms = update_storms(storms)
     next_states = set()
     print(f'minute {minute} states {len(states)}')
-    for state_pos, path in states:
+    # for state_pos, path in states:
+    for state_pos in states:
         for next_pos in [tuple(vector_add(state_pos, d)) for d in MOVES.values()] + [state_pos]:
             if next_pos == finish:
-                print(minute + 1, path)
+                # print(minute + 1, path)
+                print(minute + 1)
                 exit(0)
             if next_pos not in storms and (is_in_map(next_pos) or next_pos == start):
-                next_states.add((next_pos, tuple(path + (next_pos,))))
+                # next_states.add((next_pos, tuple(path + (next_pos,))))
+                next_states.add((next_pos))
     states = next_states
     minute += 1
 
