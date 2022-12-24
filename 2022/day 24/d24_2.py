@@ -12,7 +12,7 @@ DIR = {v: k for k, v in SYM.items()}
 cur_pos, finish, start = None, None, None
 map_width, map_height = None, None
 storms = defaultdict(list)
-PROD = True
+PROD = False
 file, printing = {True:  ('./input.txt',   False),
                   False: ('./example.txt', True)}[PROD]
 
@@ -101,8 +101,10 @@ with open(file) as f:
     map_width = range(0, len(line) - 3)
     map_height = range(0, len(lines) - 2)
 
+all_minutes = 0
+all_minutes += bfs(start, finish)
+all_minutes += bfs(finish, start)
+all_minutes += bfs(start, finish)
 
-print(bfs(start, finish))
-
-
+print(all_minutes)
 print(datetime.datetime.now() - begin_time)
