@@ -12,7 +12,7 @@ DIR = {v: k for k, v in SYM.items()}
 cur_pos, finish, start = None, None, None
 map_width, map_height = None, None
 storms = defaultdict(list)
-PROD = False
+PROD = True
 file, printing = {True:  ('./input.txt',   False),
                   False: ('./example.txt', True)}[PROD]
 
@@ -68,21 +68,16 @@ def bfs(start, finish):
 
     minute = 0
     at_finish = False
-    # states = {(cur_pos, (cur_pos,))}
     states = {start}
     while not at_finish:
         next_states = set()
         update_storms()
-        print(f'minute {minute} states {len(states)} {"" if minute > 18 else sorted(states)}')
-        # for state_pos, path in states:
         for state_pos in states:
             for next_pos in [tuple(vector_add(state_pos, d)) for d in MOVES.values()] + [state_pos]:
                 if next_pos == finish:
-                    # print(minute + 1, path)
                     at_finish = True
                     break
                 if (is_in_map(next_pos) or next_pos == start) and next_pos not in storms:
-                    # next_states.add((next_pos, tuple(path + (next_pos,))))
                     next_states.add(next_pos)
         states = next_states
 
