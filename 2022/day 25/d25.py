@@ -47,12 +47,6 @@ def to_snafu(dec):
 with open('./input.txt') as f:
     sum = sum(map(lambda line: to_dec(line.rstrip()), f.readlines()))
 
-a = '1=-0-2'
-b = '12111'
-s = to_dec(a) + to_dec(b)
-print(s, to_dec(a), to_dec(b))
-print(to_snafu(s))
-
-# print(sum)
-# print(to_snafu(sum))
+print(sum)
+print(to_snafu(sum))
 print(datetime.datetime.now() - begin_time)
