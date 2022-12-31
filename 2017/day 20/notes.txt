@@ -20,3 +20,14 @@ xa0 + tva0 + t*(t+1) // 2 * aa == xb0 + tvb0 + t*(t+1) // 2 * ab
 xa0 + tva0 + t*(t+1) // 2 * aa - xb0 - tvb0 - t*(t+1) // 2 * ab == 0
 xa0 - xb0 + tva0 - tvb0 + t*(t+1) // 2 * aa - t*(t+1) // 2 * ab == 0
 xa0 - xb0 + t(va0 - vb0) + t*(t+1) // 2 * (aa - ab) == 0
+dx := xa0 - xb0 | dv := va0 - vb0 | da := aa - ab
+dx + t * dv +  t*(t+1) // 2 * da == 0
+2dx + 2t * dv + (t^2 + t) * da == 0
+da * t^2  + da * t + 2dv *t + 2dx == 0
+da * t^2 + (da + 2dv) * t + 2dx == 0
+
+ax^2 + bx + c = 0
+x1/2 = -b ± sqrt(b^2 -4ac) // 2a
+
+t1 = -(da + 2dv) + sqrt((da + 2dv)^2 - 4 * da * 2dx) // 2da
+t2 = -(da + 2dv) - sqrt((da + 2dv)^2 - 4 * da * 2dx) // 2da
