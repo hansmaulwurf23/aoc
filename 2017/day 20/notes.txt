@@ -1,0 +1,22 @@
+x(t) = x(t-1) + v(t)
+
+v(t) = v(t-1) + a(t)
+a(t) = a(t-1) = a(0) = a    [1]
+-> v(t) = v(t-1) + a
+-> v(t) = v(0) + t * a
+
+x1 = x0 + v1
+   = x0 + v0 + a
+x2 = x1 + v2
+   = x0 + v0 + a + v1 + a
+   = x0 + v0 + a + v0 + a + a
+   = x0 + 2v0 + 3a
+x(n) = x0 + nv0 + n*(n+1) // 2 * a
+
+
+collision:
+xa(t) == xb(t)
+xa0 + tva0 + t*(t+1) // 2 * aa == xb0 + tvb0 + t*(t+1) // 2 * ab
+xa0 + tva0 + t*(t+1) // 2 * aa - xb0 - tvb0 - t*(t+1) // 2 * ab == 0
+xa0 - xb0 + tva0 - tvb0 + t*(t+1) // 2 * aa - t*(t+1) // 2 * ab == 0
+xa0 - xb0 + t(va0 - vb0) + t*(t+1) // 2 * (aa - ab) == 0
