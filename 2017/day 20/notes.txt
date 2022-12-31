@@ -20,11 +20,21 @@ xa0 + tva0 + t*(t+1) // 2 * aa == xb0 + tvb0 + t*(t+1) // 2 * ab
 xa0 + tva0 + t*(t+1) // 2 * aa - xb0 - tvb0 - t*(t+1) // 2 * ab == 0
 xa0 - xb0 + tva0 - tvb0 + t*(t+1) // 2 * aa - t*(t+1) // 2 * ab == 0
 xa0 - xb0 + t(va0 - vb0) + t*(t+1) // 2 * (aa - ab) == 0
+-362 - -927 + 10(20 - 82) + 10 * 11 // 2 * (3-2) == 0
+565 + 10(-62) + 5 * 11 == 0
+565 - 620 + 55 == 0
+
+
 dx := xa0 - xb0 | dv := va0 - vb0 | da := aa - ab
-dx + t * dv +  t*(t+1) // 2 * da == 0
-2dx + 2t * dv + (t^2 + t) * da == 0
-da * t^2  + da * t + 2dv *t + 2dx == 0
-da * t^2 + (da + 2dv) * t + 2dx == 0
+565 | -62 | 1
+
+dx + t * dv + t*(t+1) // 2 * da == 0       | 565 + t * -62 + t*(t+1)//2 * 1 == 0
+dx + t * dv + t^2 * da / 2 + t * da / 2 == 0
+da/2 * t^2 + t * dv + t * da / 2 + dx == 0
+da/2 * t^2 + (dv+da/2) * t + dx == 0
+2dx + 2t * dv + (t^2 + t) * da == 0         |
+da * t^2  + da * t + 2dv *t + 2dx == 0      |
+da * t^2 + (da + 2dv) * t + 2dx == 0        | t^2 -122 t + 1130 == 0
 
 ax^2 + bx + c = 0
 x1/2 = -b ± sqrt(b^2 -4ac) // 2a
