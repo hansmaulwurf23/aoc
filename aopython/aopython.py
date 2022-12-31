@@ -22,7 +22,7 @@ def manhattan_distance(source, target=None):
     """
     calculates the manhattan distance of the given coords to the center of the dimensions
     :param source: n-dimensional iterable holding the coordinates
-    :params target: optional n-dimensional iterable holdring the target coordinates
+    :params target: optional n-dimensional iterable holding the target coordinates
     :return: manhattan distance to the center of the coordinate system
     """
     if target is None:
@@ -40,6 +40,13 @@ def vector_add(a, b):
     Adds two vectors
     """
     return [m + n for m, n in zip(a, b)]
+
+
+def vector_mul(a, b):
+    """
+    Scales every dimension of vector a with the factor b
+    """
+    return [m * b for m in a]
 
 
 def vector(from_point, to_point):
