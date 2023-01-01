@@ -1,3 +1,4 @@
+import math
 from itertools import combinations
 
 from aopython import vector_add, vector_mul
@@ -42,8 +43,8 @@ class Particle:
                 continue
 
             a = da
-            b = da + 2*dv
-            c = 2*dx
+            b = da + 2 * dv
+            c = 2 * dx
             b2 = pow(b, 2)
             ac4 = 4 * a * c
 
@@ -51,8 +52,11 @@ class Particle:
             if b2 < ac4:
                 return -1
 
-            t1 = (-b + pow(b2 - ac4, .5)) // (2*a)
-            t2 = (-b - pow(b2 - ac4, .5)) // (2*a)
+            t1 = (-b + pow(b2 - ac4, .5)) / (2 * a)
+            t2 = (-b - pow(b2 - ac4, .5)) / (2 * a)
+
+            t1 = t1 if t1.is_integer() else -1
+            t2 = t2 if t2.is_integer() else -1
 
             if t1 <= 0:
                 t[dim] = -1 if t2 <= 0 else int(t2)
