@@ -1,25 +1,18 @@
-c = 1
-a, b, d = 1, 1, (26 if c == 0 else 33)
+import functools
+import datetime
 
+begin_time = datetime.datetime.now()
+d = 26
 
+@functools.cache
 def fib(n):
     if n == 0:
         return 0
     elif n == 1:
         return 1
     else:
-        return fib(n - 2) + fib(n - 1)
+        return fib(n - 1) + fib(n - 2)
 
-
-while d:
-    print(a)
-    c = a
-    a += b
-    b = c
-    d -= 1
-
-print(a)
-print(fib(35))
-a += 11 * 18
-
-print(a)
+print(f'part 1 {fib(d + 2) + 11 * 18}')
+print(f'part 1 {fib(d + 7 + 2) + 11 * 18}')
+print(datetime.datetime.now() - begin_time)
