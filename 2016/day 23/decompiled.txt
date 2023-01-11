@@ -20,7 +20,25 @@ jnz 1 c
 c = 77         # cpy 77 c
 jnz 87 d
 a += 1    [22] # inc a
-d += 1         # inc d
+d += s         # inc d
 if d GOTO [22] #jnz d -2
-c += 1         # inc c
+c += r         # inc c
 if c GOTO [21] #jnz c -5
+
+
+# additional init:
+r, s = 1, 1
+
+# toggle func:
+if d == 8:
+    r = -1
+elif d == 6:
+    s = -1
+
+
+# output on my breathtakingly fast 23 minute basic implementation:
+# TOOGLE 25 from ['inc', 'c'] to dec
+# TOOGLE 23 from ['inc', 'd'] to dec
+# TOOGLE 21 from ['jnz', '87 d'] to cpy
+# TOOGLE 19 from ['jnz', '1 c'] to cpy
+
