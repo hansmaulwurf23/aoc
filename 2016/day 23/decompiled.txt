@@ -1,0 +1,26 @@
+b = a          # cpy a b
+b -= 1         # dec b
+d = a          # cpy a d
+a = 0          # cpy 0 a
+c = b      [5] # cpy b c
+a += 1     [6] # inc a
+c -= 1         # dec c
+if c GOTO [6]  # jnz c -2
+d -= 1         # dec d
+if d GOTO [5]  # jnz d -5
+b -= 1         # dec b
+c = b          # cpy b c
+d = c          # cpy c d
+d -= 1    [14] # dec d
+c += 1         # inc c
+if d GOTO [14] # jnz d -2
+tgl c
+c = -16        # cpy -16 c
+jnz 1 c
+c = 77         # cpy 77 c
+jnz 87 d
+a += 1    [22] # inc a
+d += 1         # inc d
+if d GOTO [22] #jnz d -2
+c += 1         # inc c
+if c GOTO [21] #jnz c -5
