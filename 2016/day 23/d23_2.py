@@ -22,7 +22,7 @@ while pc < len(code):
     elif cmd == 'jnz':
         x, y = args.split(' ')
         offset = int(y) if y.lstrip('-').isnumeric() else registers[y]
-        pc += offset if (x.isnumeric() and x) or registers[x] else 1
+        pc += offset if (x.isnumeric() and int(x)) or (x in registers and registers[x]) else 1
         continue
     elif cmd == 'cpy':
         x, y = args.split(' ')

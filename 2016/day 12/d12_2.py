@@ -18,7 +18,7 @@ while pc < len(code):
         registers[args] -= 1
     elif cmd == 'jnz':
         x, y = args.split(' ')
-        pc += int(y) if (x.isnumeric() and x) or registers[x] else 1
+        pc += int(y) if (x.isnumeric() and int(x)) or (x in registers and registers[x]) else 1
         continue
     elif cmd == 'cpy':
         x, y = args.split(' ')
