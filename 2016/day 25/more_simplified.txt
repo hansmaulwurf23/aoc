@@ -1,0 +1,32 @@
+                      |  out 0     |  out 1
+============================================
+d = a + 182 * 14      |            |
+a = d     [9]         |            |
+NOOP      [10]        |            |
+b = a                 |            |
+a = 0                 |            |
+c = 2     [13]        |            |
+while b   [14]        | b % 2 == 0 | b % 2 == 1
+    b -= 1    [16]    |            |
+    c -= 1            |            |
+    if not c          |            |
+        a += 1        |            |
+        c = 2         |            |
+                      |            |
+b = 2     [21]        | c == 2     | c == 1
+while c:              |            |
+    b -= 1            |            |
+    c -= 1            |            |
+                      |            |
+NOOP      [27]        |            |
+out b                 | b == 0     | b == 1
+if a GOTO [10]        |            |
+if 1 GOTO [9]         |            |
+
+Unfortunately I didn't realize 9-14 divides with remainder so that the reversed binary representation of a is sent
+to output. So the minimum a is that where a + 182 * 14 = a + b100111110101 must hold alternating 0s and 1s
+   b100111110100 | 2548 (14 * 182)
+       b10110110 |  182
+=  b101010101010
+
+This one could have been solved on paper!

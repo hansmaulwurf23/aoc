@@ -1,0 +1,24 @@
+d = a + 182 * 14
+a = d     [9]
+NOOP      [10]
+b = a
+a = 0
+c = 2     [13]
+if b GOTO [16] [14]
+if 1 GOTO [21]
+b -= 1    [16]
+c -= 1
+if c GOTO [14]
+a += 1
+if 1 GOTO [13]
+
+b = 2     [21]
+if c GOTO [24] [22]
+if 1 GOTO [27]
+b -= 1    [24]
+c -= 1
+if 1 GOTO [22]
+NOOP      [27]
+out b
+if a GOTO [10]
+if 1 GOTO [9]
