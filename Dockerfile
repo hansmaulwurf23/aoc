@@ -8,4 +8,3 @@ RUN mkdir aoc
 COPY ./requirements.txt /aoc/requirements.txt
 
 RUN pip3 install -r /aoc/requirements.txt
-RUN export PYTHONPATH=/aoc/aopython/
