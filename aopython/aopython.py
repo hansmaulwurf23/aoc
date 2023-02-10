@@ -1,3 +1,6 @@
+import math
+
+
 def min_max_2d(coords):
     """
     Calculates the min and max of every dimension in 2D
@@ -120,3 +123,39 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
+
+def divisors(number):
+    # get factors and their counts
+    factors = {}
+    rest = number
+    p = 2
+    while p * p <= rest:
+        while rest % p == 0:
+            factors[p] = factors.get(p, 0) + 1
+            rest //= p
+        p += 1
+    if rest > 1:
+        factors[rest] = factors.get(rest, 0) + 1
+
+    primes = list(factors.keys())
+
+    # generates factors from primes[k:] subset
+    def generate(k):
+        if k == len(primes):
+            yield 1
+        else:
+            rest = generate(k + 1)
+            prime = primes[k]
+            for factor in rest:
+                prime_to_i = 1
+                # prime_to_i iterates prime**i values, i being all possible exponents
+                for _ in range(factors[prime] + 1):
+                    yield factor * prime_to_i
+                    prime_to_i *= prime
+
+    yield from generate(0)
+
+
+def divisors_sorted(num):
+    divs = [i for i in range(1, int(math.sqrt(num)) + 1) if num % i == 0]
+    return divs + [num // i for i in reversed(divs) if i != num // i]
