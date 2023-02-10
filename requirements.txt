@@ -1,0 +1,3 @@
+imageio
+matplotlib
+z3-solver
