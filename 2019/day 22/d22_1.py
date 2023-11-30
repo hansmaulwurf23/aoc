@@ -13,15 +13,7 @@ def run_cmds(cmds, use_idx, no_cards):
             idx = no_cards - idx - 1
         elif matches := re.match(r'cut ([-]*\d+)', line):
             val = int(matches.groups()[0])
-            if val < 0:
-                val += no_cards
-            if idx < val:
-                # in part that is rotated
-                idx = no_cards - val + idx
-            else:
-                # in part that is moved to front
-                idx = idx - val
-
+            idx = idx - val % no_cards
         elif matches := re.match(r'deal with increment ([-]*\d+)', line):
             val = int(matches.groups()[0])
             idx = (idx * val) % no_cards
