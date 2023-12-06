@@ -38,6 +38,24 @@ def range_in_range(a, b):
     return a.start in b and a.stop - 1 in b
 
 
+def merge_ranges(ranges: list):
+    """
+    Merges a list of ranges. Returns a list of overlapping free sorted by start ranges.
+    """
+    res = []
+    for r in sorted(ranges, key=lambda r: r.start):
+        if len(res):
+            p = res[-1]
+            if r.start in p:
+                res[-1] = range(p.start, max(p.stop, r.stop))
+            else:
+                res.append(r)
+        else:
+            res.append(r)
+
+    return res
+
+
 def vector_add(a, b):
     """
     Adds two vectors
