@@ -56,6 +56,28 @@ def merge_ranges(ranges: list):
     return res
 
 
+def abc_formula(a, b, c):
+    """
+    Solves a quadratic function ax^2 + bx + c = 0. Negative discriminant will return no solution (instead of complex
+    solutions). Upon a == 0 the linear function is solved.
+    """
+    if a == 0:
+        return [-c/b]
+
+    discriminant = b * b - (4 * a * c)
+    if discriminant < 0:
+        return []
+
+    sqrt_discr = pow(discriminant, .5)
+    sol_1 = (-b + sqrt_discr) / (2 * a)
+
+    if discriminant == 0:
+        return [sol_1]
+
+    sol_2 = (-b - sqrt_discr) / (2 * a)
+    return list(sorted([sol_1, sol_2]))
+
+
 def vector_add(a, b):
     """
     Adds two vectors
