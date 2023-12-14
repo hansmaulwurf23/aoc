@@ -20,6 +20,10 @@ def min_max_2d(coords):
 
     return fx, tx, fy, ty
 
+def print_grid(grid, sep_below=False):
+    print('\n'.join([''.join(line) for line in grid]))
+    if sep_below:
+        print('='*80)
 
 def manhattan_distance(source, target=None):
     """
