@@ -1,7 +1,4 @@
 import datetime
-
-from aopython import print_grid
-
 begin_time = datetime.datetime.now()
 
 NORTH, WEST, SOUTH, EAST = range(4)
@@ -43,11 +40,11 @@ with open('./input.txt') as f:
     while line := f.readline().rstrip():
         grid.append(list(line))
 
-print(f'part 1: {calc_weight(TRANS[NORTH](tilt(TRANS[NORTH](grid))))}')
+p1 = calc_weight(TRANS[NORTH](tilt(TRANS[NORTH](grid))))
+print(f'part 1: {p1}')
+assert p1 in [136, 109939]
 
 cycles, cycle = 1_000_000_000, 0
-# cycles, cycle = 1_000, 0
-# print_grid(grid, sep_below=True)
 seen, weights = {}, {}
 while True:
     cycle += 1
@@ -64,5 +61,7 @@ while True:
     if cycle >= cycles:
         break
 
-print(f'part 2: {calc_weight(grid)}')
+p2 = calc_weight(grid)
+print(f'part 2: {p2}')
+assert p2 in [64, 101010]
 print(datetime.datetime.now() - begin_time)
