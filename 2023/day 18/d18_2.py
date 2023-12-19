@@ -27,6 +27,7 @@ for dir, amount in cmds:
 
 # https://en.wikipedia.org/wiki/Shoelace_formula
 p2 = sum([((x1 - x2) * (y2 + y1)) for (x1, y1), (x2, y2) in pairwise(points)]) // 2
+# https://en.wikipedia.org/wiki/Pick%27s_theorem
 p2 += (asum // 2 + 1)
 
 print(f'part 2: {p2}')
