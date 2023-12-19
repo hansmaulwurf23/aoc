@@ -60,6 +60,14 @@ def merge_ranges(ranges: list):
     return res
 
 
+def intersect_ranges(x: range, y: range):
+    """
+    Returns a new range that contains the intersection of the two given ranges
+    """
+    assert x.step == y.step == 1
+    return range(max(x.start, y.start), min(x.stop, y.stop))
+
+
 def abc_formula(a, b, c):
     """
     Solves a quadratic function ax^2 + bx + c = 0. Negative discriminant will return no solution (instead of complex
