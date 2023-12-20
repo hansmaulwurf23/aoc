@@ -12,10 +12,10 @@ FLPFLP = '%'
 CONJ = '&'
 OUTPUT = 'output'
 
-def run_signal(start = BRDCSTR, sgnl = LO, src = 'button'):
+def run_signal():
     global modules
     counter = [0, 0]
-    comm = deque([(start, sgnl, src)])
+    comm = deque([(BRDCSTR, LO, 'button')])
 
     while comm:
         mod, sgnl, src = comm.popleft()
@@ -28,9 +28,8 @@ def run_signal(start = BRDCSTR, sgnl = LO, src = 'button'):
         elif mod == OUTPUT:
             # print(sgnl, src)
             pass
-        elif mod == 'rx':
-            if sgnl == LO:
-                return -1
+        elif mod not in modules:
+            continue
         elif modules[mod].type == FLPFLP and sgnl == LO:
             modules[mod].state = INV[modules[mod].state]
             for t in modules[mod].targets:
