@@ -1,5 +1,5 @@
 import datetime
-from collections import defaultdict
+from collections import defaultdict, deque
 
 begin_time = datetime.datetime.now()
 
@@ -30,13 +30,13 @@ for index, brick in enumerate(bricks):
 
 bricks = list(sorted(bricks, key=lambda x: x[S][Z]))
 
-supports = defaultdict(list)
-supported = defaultdict(list)
+supports = defaultdict(set)
+supported = defaultdict(set)
 for lo, hi in [(lo, hi) for hi in range(len(bricks)) for lo in range(hi)]:
     lo_brick, hi_brick = bricks[lo], bricks[hi]
     if lo_brick[E][Z] + 1 == hi_brick[S][Z] and bricks_overlap(lo_brick, hi_brick):
-        supports[lo].append(hi)
-        supported[hi].append(lo)
+        supports[lo].add(hi)
+        supported[hi].add(lo)
 
 total = 0
 for idx in range(len(bricks)):
@@ -46,4 +46,18 @@ for idx in range(len(bricks)):
         total += 1
 
 print(f'part 1: {total}')
+
+total = 0
+for lo in range(len(bricks)):
+    q = deque(hi for hi in supports[lo] if len(supported[hi]) == 1)
+    falling = set(q) | {lo}
+
+    while q:
+        current_falling = q.popleft()
+        for hi in [hi for hi in supports[current_falling] if hi not in falling and all(s in falling for s in supported[hi])]:
+            falling.add(hi)
+            q.append(hi)
+
+    total += len(falling) - 1
+print(f'part 2: {total}')
 print(datetime.datetime.now() - begin_time)
