@@ -19,19 +19,19 @@ def bfs(start, end, used_edges):
     previous_node = {start: None}
     queue = [start]
     while queue:
-        s = queue.pop()
+        node = queue.pop()
 
-        if s == end:
+        if node == end:
             reverse_path = []
-            while s != start:
-                reverse_path.append((previous_node[s], s))
-                s = previous_node[s]
+            while node != start:
+                reverse_path.append((previous_node[node], node))
+                node = previous_node[node]
             return list(reversed(reverse_path))
 
-        for t in network[s]:
-            if t not in previous_node and (s, t) not in used_edges:
-                previous_node[t] = s
-                queue.append(t)
+        for other in network[node]:
+            if other not in previous_node and (node, other) not in used_edges:
+                previous_node[other] = node
+                queue.append(other)
 
     return None
 
