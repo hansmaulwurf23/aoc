@@ -2,6 +2,9 @@
 import datetime
 import os.path
 from urllib import request
+from urllib.error import HTTPError
+
+from bs4 import BeautifulSoup
 
 now = datetime.datetime.now()
 year, day = now.year, now.day
@@ -12,11 +15,24 @@ if not os.path.exists(f'./{year}/day {day:02d}'):
     os.makedirs(f'./{year}/day {day:02d}')
 
 if os.path.exists(f'./{year}/day {day:02d}/input.txt'):
-    print('Input exists. Skipping.')
-    exit(0)
+    print(f'{year}/{day} Input exists. Skipping.')
+else:
+    req = request.Request(f'https://adventofcode.com/{year}/day/{day}/input', headers={'cookie': cookie})
+    try:
+        with request.urlopen(req) as f:
+            with open(f'./{year}/day {day:02d}/input.txt', 'w') as inp:
+                inp.write(f.read().decode('utf-8'))
+            print('downloaded and saved.')
+    except HTTPError as e:
+        print(f'HTTP Error: {e.code} {e.reason}')
+        exit(1)
 
-req = request.Request(f'https://adventofcode.com/{year}/day/{day}/input', headers={'cookie': cookie})
+req = request.Request(f'https://adventofcode.com/{year}/day/{day}', headers={'cookie': cookie})
 with request.urlopen(req) as f:
-    with open(f'./{year}/day {day:02d}/input.txt', 'w') as inp:
-        inp.write(f.read().decode('utf-8'))
-    print('downloaded and saved.')
+    h = f.read().decode('utf-8')
+    soup = BeautifulSoup(h, 'html.parser')
+    for i, pre in enumerate(soup.find_all('pre')):
+        fname = f'./{year}/day {day:02d}/code{i:02d}.txt'
+        print(f'writing {fname}...')
+        with open(fname, 'a') as c:
+            c.write(pre.text)
