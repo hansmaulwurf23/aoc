@@ -45,13 +45,13 @@ for l in lines[2:]:
         continue
     boards[-1].append([int(x) for x in l.split()])
 
+winners = dict()
 for n in numbers:
     for bi in range(len(boards)):
-        if in_board(bi, n) and check_win(bi):
-            print(n * calc_score(bi))
-            break
-    else:
-        continue
-    break
+        if bi not in winners and in_board(bi, n) and check_win(bi):
+            winners[bi] = n * calc_score(bi)
 
+winorder = list(winners)
+print(f'part 1: {winners[winorder[0]]}')
+print(f'part 2: {winners[winorder[-1]]}')
 print(datetime.datetime.now() - begin_time)
