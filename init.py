@@ -1,12 +1,16 @@
 # downloads the input of the current day (as input.txt) and making sure that ./<year>/<day>/ folder exists.
 import datetime
 import os.path
+import sys
 from urllib import request
 from urllib.error import HTTPError
-
 from bs4 import BeautifulSoup
 
-now = datetime.datetime.now()
+if len(sys.argv) > 1:
+    now = datetime.datetime.strptime(f'{sys.argv[1]}-12-{sys.argv[2]}', '%Y-%m-%d')
+else:
+    now = datetime.datetime.now()
+
 year, day = now.year, now.day
 with open('./cookie') as f:
     cookie = f.readline()
