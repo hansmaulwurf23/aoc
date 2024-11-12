@@ -1,5 +1,13 @@
 import math
 
+def min_max(values):
+    lo, hi = None, None
+    for v in values:
+        if lo is None or lo > v: lo = v
+        if hi is None or hi < v: hi = v
+
+    return lo, hi
+
 
 def min_max_2d(coords):
     """
