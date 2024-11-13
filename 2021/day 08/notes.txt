@@ -1,0 +1,35 @@
+       ....
+      .    c
+2      ....
+      .    f
+       ....
+
+       aaaa
+      .    c
+3      ....
+      .    f
+       ....
+
+        ....
+      b    c
+4      dddd
+      .    f
+       ....
+
+        aaaa    aaaa     aaaa
+      .    c   .    c   b    .
+5      dddd     dddd     dddd
+      e    .   .    f   .    f
+       gggg     gggg     gggg
+
+       aaaa     aaaa     aaaa
+      b    c   b    .   b    c
+6      ....     dddd     dddd
+      e    f   e    f   .    f
+       gggg     gggg     gggg
+
+       aaaa
+      b    c
+7      dddd
+      e    f
+       gggg
