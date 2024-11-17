@@ -177,6 +177,14 @@ def bool_list_to_int(l):
     return sum(v << i for i, v in enumerate(reversed(l)))
 
 
+def mapSum(coutings, updates):
+    if not updates: return coutings
+
+    for k, v in updates.items():
+        coutings[k] += v
+    return coutings
+
+
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
