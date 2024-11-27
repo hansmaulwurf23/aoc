@@ -227,3 +227,7 @@ def divisors(number):
 def divisors_sorted(num):
     divs = [i for i in range(1, int(math.sqrt(num)) + 1) if num % i == 0]
     return divs + [num // i for i in reversed(divs) if i != num // i]
+
+
+def triangular_number(n: int) -> int:
+    return n * (n + 1) // 2
