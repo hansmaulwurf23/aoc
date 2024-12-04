@@ -14,20 +14,16 @@ for line in text:
 for x in range(len(text[0])):
     counter += count_in_line(''.join(l[x] for l in text))
 
-# \ upper right
 for t in range(len(text[0]) - 3):
-    counter += count_in_line(''.join(text[y][x] for y, x in zip(range(len(text)), range(t, len(text[0])))))
-
-# \ lower left
-for t in range(1, len(text) - 3):
-    counter += count_in_line(''.join(text[y][x] for y, x in zip(range(t, len(text)), range(len(text[0])))))
-
-# / upper left
-for t in range(len(text[0]) - 3):
+    # \ upper right
+    counter += count_in_line(''.join(text[y][x] for y, x in zip(range(len(text) - t), range(t, len(text[0])))))
+    # / upper left
     counter += count_in_line(''.join(text[y][x] for y, x in zip(range(len(text) - 1 - t, -1, -1), range(len(text[0])))))
 
-# / lower right
 for t in range(1, len(text) - 3):
+    # \ lower left
+    counter += count_in_line(''.join(text[y][x] for y, x in zip(range(t, len(text)), range(len(text[0]) - t))))
+    # / lower right
     counter += count_in_line(''.join(text[y][x] for y, x in zip(range(len(text) - 1, -1, -1), range(t, len(text[0])))))
 
 print(f'part 1: {counter}')
