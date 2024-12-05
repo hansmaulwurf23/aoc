@@ -5,10 +5,9 @@ begin_time = datetime.datetime.now()
 
 
 def is_valid(pages, rules):
-    for p_idx, page in enumerate(pages):
-        for o_idx, other in enumerate([o for o in pages[p_idx + 1:]]):
-            if page in rules[other]:
-                return False, (p_idx, o_idx + p_idx + 1)
+    for p_idx, page, o_idx, other in [(i, p, k, o) for i, p in enumerate(pages) for k, o in enumerate(pages[i+1:])]:
+        if page in rules[other]:
+            return False, (p_idx, o_idx + p_idx + 1)
 
     return True, None
 
