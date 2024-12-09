@@ -1,5 +1,5 @@
 import datetime
-from collections import deque
+from collections import deque, defaultdict
 from itertools import zip_longest
 
 begin_time = datetime.datetime.now()
@@ -51,27 +51,34 @@ def defrag_blockwise(orgdisk):
 
 def defrag_filewise(orgdisk):
     disk = list(orgdisk)
-    # remove last free space entry
-    disk.pop()
-    free_idx, used_idx = 1, len(disk) - 1
-    moved_idx = set()
-    while used_idx >= 0:
+    free_idx, used_idx = 1, len(disk) - 2
+    inserts = defaultdict(list)
+    while used_idx >= free_idx:
         used, id = disk[used_idx]
-        for i in [i for i in range(free_idx, used_idx) if disk[i][ID] is None]:
+        for i in [i for i in range(free_idx, used_idx, 2) if disk[i][ID] is None]:
             free, _ = disk[i]
             if free >= used:
-                disk[i] = [used, id]
-                moved_idx.add(id)
                 disk[used_idx][ID] = None
-                if free > used:
-                    disk.insert(i + 1, [free - used, None])
-                    used_idx += 1
-                    free_idx = i + 1 if free_idx == i else free_idx
+
+                if free == used:
+                    # replace with file
+                    disk[i][ID] = id
+                    free_idx = i + 2 if free_idx == i else free_idx
+                else:
+                    # update free space and store insert for later
+                    inserts[i].append((used, id))
+                    disk[i][SIZE] = free - used
                 break
-        used_idx -= 1
-        while disk[used_idx][ID] is None or disk[used_idx][ID] in moved_idx:
-            used_idx -= 1
-    return disk
+        used_idx -= 2
+
+    new_disk = []
+    for i, (sz, oid) in enumerate(disk):
+        if inserts[i]:
+            new_disk.extend(inserts[i])
+        if sz:
+            new_disk.append([sz, oid])
+
+    return new_disk
 
 disk = []
 with open('./input.txt') as f:
@@ -81,9 +88,9 @@ with open('./input.txt') as f:
         disk.append([free, None])
 
 p1 = chksum(defrag_blockwise(disk))
-assert p1 in (6446899523367, 1928)
 print(f'part 1: {p1}')
+assert p1 in (6446899523367, 1928)
 p2 = chksum(defrag_filewise(disk))
-assert p2 in (6478232739671, 2858)
 print(f'part 2: {p2}')
+assert p2 in (6478232739671, 2858)
 print(datetime.datetime.now() - begin_time)
