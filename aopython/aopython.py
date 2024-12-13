@@ -1,4 +1,6 @@
 import math
+from itertools import zip_longest
+
 
 def min_max(values):
     lo, hi = None, None
@@ -231,3 +233,59 @@ def divisors_sorted(num):
 
 def triangular_number(n: int) -> int:
     return n * (n + 1) // 2
+
+
+def solve(coeffs: list, rs: list) -> list:
+    """ Solve n linear equations with n unknowns.
+        a11 x + a12 y + a13 z + ... = r1
+        ...
+        an1 x + an2 y + an3 z + ... = rn
+
+        Pass coefficients in list of lists:
+        [[a11, a12, a13, ..., a1n], ..., [an1, an2, an3, ..., ann]]
+        and the right sides as another list:
+        [r1, r2, ..., rn]
+
+        Returns solution for [x, y, z, ...]
+        """
+
+    # transform to equations like this: a*x + b*y + c*z + ... - r = 0
+    eqs = []
+    for cs, r in zip(coeffs, rs):
+        eqs.append(cs + [-r])
+
+    remaining_eqs = []
+    while eqs:
+        # find an equation whose first element is not zero
+        eq, idx = next((e, i) for i, e in enumerate(eqs) if e[0] != 0)
+        # add this equation with the non zero first element eliminated
+        eq = [-coeff / eq[0] for coeff in eq[1:]]
+        remaining_eqs.append(eq)
+        eqs.pop(idx)
+
+        # eliminate first element from all other equations
+        for other_eq in eqs:
+            for j, coeff in enumerate(eq):
+                other_eq[j + 1] += other_eq[0] * coeff
+            other_eq.pop(0)
+
+    solutions = [remaining_eqs.pop(-1)[0]]
+    for i, eq in enumerate(reversed(remaining_eqs)):
+        solutions.append(sum([a * b for a, b in zip_longest(eq, reversed(solutions), fillvalue=1)]))
+    solutions.reverse()
+
+    return solutions
+
+
+def int_solve(coeffs, rs):
+    """ see :func:`~solve` for description of arguments
+        returns None in all dimensions if there is no integer solution
+    """
+    solutions = solve(coeffs, rs)
+
+    solutions = list(map(lambda x: int(x + .5), solutions))
+    for cs, r in zip(coeffs, rs):
+        if sum([c * a for c, a in zip(cs, solutions)]) != r:
+            return [None] * len(rs)
+
+    return solutions
