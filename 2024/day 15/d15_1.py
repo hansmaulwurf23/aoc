@@ -1,6 +1,7 @@
 import datetime
 
 from aopython import vector_add
+from ascii2gif import Ascii2Gif
 
 begin_time = datetime.datetime.now()
 
@@ -67,8 +68,11 @@ with open('./input.txt') as f:
     DIMX, DIMY = len(grid[0]), len(grid)
     moves = ''.join(lines[y + 1:])
 
-for m in moves:
+for i, m in enumerate(moves):
     cur = move(cur, m)
+    # with open(f'/tmp/d15/{str(i).rjust(6, "0")}.txt', 'w+') as f:
+    #     f.write('\n'.join([''.join(l) for l in grid]))
 
+# Ascii2Gif('/tmp/d15').render(only_frames=True)
 print(gps())
 print(datetime.datetime.now() - begin_time)
