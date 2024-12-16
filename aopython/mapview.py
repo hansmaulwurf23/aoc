@@ -30,9 +30,9 @@ class MapView(object):
 
     def draw_x_tick(self, x, atts = None):
         atts = curses.color_pair(1) if atts is None else atts
-        self.stdscr.addstr(2, self.XOFF + x, str(x % 10), atts)
+        self.stdscr.addstr(1, self.XOFF + x, str(x % 10), atts)
         if x >= 10:
-            self.stdscr.addstr(1, self.XOFF + x, str(x // 10), atts)
+            self.stdscr.addstr(0, self.XOFF + x, str(x // 10), atts)
 
     def draw_y_axis(self):
         for y in range(0, self.DIMY, 1):
@@ -40,7 +40,7 @@ class MapView(object):
 
     def draw_y_tick(self, y, atts = None):
         atts = curses.color_pair(1) if atts is None else atts
-        self.stdscr.addstr(self.YOFF + y, 0, str(y).rjust(self.XOFF), atts)
+        self.stdscr.addstr(self.YOFF + y, 0, str(y).rjust(self.XOFF-1), atts)
 
     def draw_lines(self):
         for y, line in enumerate(self.lines):
