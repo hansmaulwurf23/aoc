@@ -7,6 +7,7 @@ class MapView(object):
 
     DIRS = {KEY_UP: (0, -1), KEY_DOWN: (0, 1), KEY_LEFT: (-1, 0), KEY_RIGHT: (1, 0)}
     YOFF, XOFF = 3, 4
+    DPOS, DSTEPS, DPATH = range(3)
 
     def __init__(self, filename, stdscr):
         self.stdscr = stdscr
@@ -15,8 +16,13 @@ class MapView(object):
         self.pos = [0, 0]
         self.DIMX = len(self.lines[0])
         self.DIMY = len(self.lines)
+        self.DISPLAYS = self.DIMY + self.YOFF + 1
+        self.inverted_dims = False
+        self.step_mode = False
+        self.steps = None
         curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         curses.curs_set(0)
         self.update_map()
         self.curses_control()
@@ -61,8 +67,15 @@ class MapView(object):
         self.stdscr.refresh()
 
     def update_pos(self):
-        pstr = str(self.pos).ljust(10)
-        self.stdscr.addstr(self.DIMY + self.YOFF + 1, self.DIMX + self.XOFF + 1, pstr)
+        pstr = str(f'pos: {self.pos if not self.inverted_dims else list(reversed(self.pos))}').ljust(15)
+        self.stdscr.addstr(self.DISPLAYS + self.DPOS, self.XOFF + 1, pstr)
+        self.stdscr.addch(self.DISPLAYS + self.DPOS, self.XOFF + 1, 'p', curses.color_pair(3))
+        self.stdscr.refresh()
+
+    def update_steps(self):
+        pstr = str(f'steps: {self.steps}').ljust(15)
+        self.stdscr.addstr(self.DISPLAYS + self.DSTEPS, self.XOFF + 1, pstr)
+        self.stdscr.addch(self.DISPLAYS + self.DSTEPS, self.XOFF + 1, 's', curses.color_pair(3))
         self.stdscr.refresh()
 
     def update_map(self):
@@ -83,6 +96,17 @@ class MapView(object):
                     self.set_highlight(nxt, self.pos)
                     self.pos = nxt
                     self.update_pos()
+                    if self.step_mode:
+                        self.steps += 1
+                        self.update_steps()
+            if c == ord('p'):
+                self.inverted_dims = not self.inverted_dims
+                self.update_pos()
+            if c == ord('s'):
+                self.step_mode = not self.step_mode
+                if self.step_mode:
+                    self.steps = 0
+                self.update_steps()
             c = self.stdscr.getch()
 
 def main(stdscr):
