@@ -1,0 +1,72 @@
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? True 0
+0 B = A & 7
+1 B = B ^ 1
+2 C = A // (2 ^ B)
+3 B = B ^ 5
+4 B = B ^ C
+5 OUTPUT B & 7
+6 A = A // (2 ^ 3)
+7 JNZ ? False 0

@@ -1,0 +1,15 @@
+2,4 BST
+1,1 BXL
+7,5 CDV RightShift(B)!
+1,5 BXL
+4,1 BXC
+5,5 OUT
+0,3 ADV RightShift(3)!
+3,0 JNZ
+
+0 B = A & 7 ^ 1
+2 C = A >> B
+3 B = B ^ b101 ^ C
+5 OUTPUT B & 7
+6 A = A >> 3
+7 JNZ ? True 0
