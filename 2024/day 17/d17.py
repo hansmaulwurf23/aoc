@@ -8,7 +8,7 @@ def combo(regs, val):
     return val if val <= 3 else regs[chr(ord('A') + val - 4)]
 
 
-def run(prg, regs):
+def run(prg, regs, only_first_out = False):
     outputs = []
     ip = 0
     while ip < len(prg):
@@ -28,6 +28,8 @@ def run(prg, regs):
         elif op == BXC:
             regs['B'] ^= regs['C']
         elif op == OUT:
+            if only_first_out:
+                return cbop & 7
             outputs.append(cbop & 7)
         elif op == BDV:
             regs['B'] = regs['A'] // (2 ** cbop)
@@ -36,7 +38,7 @@ def run(prg, regs):
 
         ip += 2
 
-    return ','.join(map(str, outputs))
+    return outputs
 
 
 regs = dict()
@@ -48,23 +50,24 @@ with open('./input.txt') as f:
     prg = list(map(int, f.readline().rstrip().replace('Program: ', '').split(',')))
 
 # regs, prg, assertion = {'A': 0, 'B': 0, 'C': 9}, [2, 6], "regs['B'] == 1"
-# regs, prg, assertion = {'A': 10, 'B': 0, 'C': 0}, [5, 0, 5, 1, 5, 4], 'p1 == "0,1,2"'
-# regs, prg, assertion = {'A': 2024, 'B': 0, 'C': 0}, [0, 1, 5, 4, 3, 0], 'p1 == "4,2,5,6,7,7,7,7,3,1,0"'
+# regs, prg, assertion = {'A': 10, 'B': 0, 'C': 0}, [5, 0, 5, 1, 5, 4], 'p1 == [0,1,2]'
+# regs, prg, assertion = {'A': 2024, 'B': 0, 'C': 0}, [0, 1, 5, 4, 3, 0], 'p1 == [4,2,5,6,7,7,7,7,3,1,0]'
 # regs, prg, assertion = {'A': 0, 'B': 29, 'C': 0}, [1, 7], "regs['B'] == 26"
 # regs, prg, assertion = {'A': 0, 'B': 2024, 'C': 43690}, [4, 0], "regs['B'] == 44354"
-assertion = 'p1 == "7,4,2,5,1,4,6,0,4"'
+assertion = 'p1 == [7,4,2,5,1,4,6,0,4]'
 
 p1 = run(prg, regs)
-print(f'part 1: {p1}')
+print(f'part 1: {','.join(map(str, p1))}')
 if assertion:  assert eval(assertion)
 
 # terminating condition!
 valids = {0}
 # beginning from the end add one more output at a time
-for subprg in [','.join(map(str, prg[-l:])) for l in range(1, len(prg)+1)]:
+for subprg in [prg[-l:] for l in range(1, len(prg)+1)]:
     new_valids = set()
     for a in [a << 3 for a in valids]:
-        new_valids |= {a | lst3bits for lst3bits in range(8) if run(prg, {'A': a | lst3bits, 'B': 0, 'C': 0}) == subprg}
+        new_valids |= {a | lst3bits for lst3bits in range(8) \
+                       if run(prg, {'A': a | lst3bits, 'B': 0, 'C': 0}, only_first_out=True) == subprg[0]}
     valids = new_valids
 
 p2 = min(valids)
