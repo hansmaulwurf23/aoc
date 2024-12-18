@@ -38,15 +38,12 @@ print(f'part 1: {p1}')
 assert p1 in (272, 22)
 
 lo, hi = 0, len(bytes)
-while True:
+while lo + 1 != hi:
     cap = lo + ((hi - lo) // 2)
     if not bfs(start, end, cap):
         hi = cap
     else:
         lo = cap
-
-    if lo + 1 == hi:
-        break
 
 print(f"part 2: {','.join(map(str, list(filter(lambda b: bytes[b] == hi, bytes))[0]))}")
 print(datetime.datetime.now() - begin_time)
