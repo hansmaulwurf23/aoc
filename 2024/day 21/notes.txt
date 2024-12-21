@@ -1,0 +1,16 @@
+379A
+v<<A>>^AvA^Av<<A>>^AA  <vA<A>>^AAvAA^<A>A<vA^>AA<A>Av<<A>A^>AAA<A>vA^A
+||          |||||||||  ||||||||    || ||||| |||  || ||||| || |||||
+<v<A>>^AvA^A<vA<AA>>^  AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A
+
+v<<A>>^AvA^Av<<A>>^AA<vA<A>>^AAvAA^<A>A<vA^>AA<A>Av<<A>A^>AAA<A>vA^A
+<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A
+<A>A<AAv<AA>>^AvAA^A<vAAA^>A
+<A>Av<<AA>^AA>AvAA^A<vAAA>^A
+^A^^<<A>>AvvvA
+^A<<^^A>>AvvvA
+379A
+379A
+
+248108
+303836969407080
