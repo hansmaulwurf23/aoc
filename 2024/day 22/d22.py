@@ -14,7 +14,7 @@ for i, s in enumerate(secret_numbers):
     prices.append(s % 10)
     for r in range(2000):
         s = ((s << 6) ^ s) & 16777215
-        s = ((s >> 5) ^ s) & 16777215
+        s = ((s >> 5) ^ s) # & 16777215 cannot be bigger than before
         s = ((s << 11) ^ s) & 16777215
         prices.append(s % 10)
         diff.append(prices[-1] - prices[-2])
