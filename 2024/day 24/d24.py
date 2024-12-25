@@ -1,5 +1,4 @@
 import datetime
-from traceback import print_tb
 import pydot
 
 begin_time = datetime.datetime.now()
