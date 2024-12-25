@@ -25,13 +25,13 @@ def get_sub_graph(network, v):
 
 
 network = defaultdict(set)
-with open('./example.txt') as f:
+with open('./input.txt') as f:
     while line := f.readline().rstrip():
         a, b = line.split('-')
         network[a].add(b)
         network[b].add(a)
 
-render_graph('example.svg')
+# render_graph('graph.svg')
 groups = set()
 for k, others in [(k, os) for k, os in network.items() if k[0] == 't']:
     for a, b in [(a, b) for a, b in combinations(others, 2) if b in network[a]]:
